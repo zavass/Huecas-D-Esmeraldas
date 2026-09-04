@@ -1,0 +1,304 @@
+.hoteles-hero {
+    padding: 95px 0 115px;
+
+    background:
+        linear-gradient(
+            125deg,
+            #12251f,
+            #11664d
+        );
+
+    color: white;
+}
+
+.hoteles-hero span {
+    color: #72e4bc;
+
+    font-size: 12px;
+    font-weight: 850;
+
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.hoteles-hero h1 {
+    max-width: 720px;
+
+    margin-top: 12px;
+
+    font-size: clamp(
+        44px,
+        6vw,
+        70px
+    );
+
+    line-height: 1;
+
+    letter-spacing: -3px;
+}
+
+.hoteles-hero p {
+    max-width: 600px;
+
+    margin-top: 20px;
+
+    color: #b9d3ca;
+
+    line-height: 1.8;
+}
+
+.hoteles-section {
+    padding: 0 0 90px;
+
+    background: #f5f8f7;
+}
+
+.hoteles-search {
+    position: relative;
+
+    top: -34px;
+
+    min-height: 76px;
+
+    padding: 12px 14px 12px 22px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    border: 1px solid #e1e8e5;
+    border-radius: 19px;
+
+    background: white;
+
+    box-shadow:
+        0 17px 45px
+        rgba(16, 35, 29, 0.12);
+}
+
+.hoteles-search svg {
+    color: #87958f;
+}
+
+.hoteles-search input {
+    flex: 1;
+
+    height: 48px;
+
+    border: none;
+    outline: none;
+
+    font-size: 14px;
+}
+
+.hoteles-search button {
+    height: 50px;
+
+    padding: 0 30px;
+
+    border-radius: 13px;
+
+    background: #087f5b;
+    color: white;
+
+    font-weight: 800;
+}
+
+.hoteles-title {
+    margin: 15px 0 28px;
+}
+
+.hoteles-title span {
+    color: #087f5b;
+
+    font-size: 11px;
+    font-weight: 850;
+
+    text-transform: uppercase;
+}
+
+.hoteles-title h2 {
+    margin-top: 6px;
+
+    font-size: 32px;
+
+    color: #10231d;
+}
+
+.hoteles-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+}
+
+.hotel-card {
+    overflow: hidden;
+
+    border: 1px solid #e1e8e5;
+    border-radius: 22px;
+
+    background: white;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.hotel-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 18px 45px
+        rgba(16, 35, 29, 0.12);
+}
+
+.hotel-image {
+    position: relative;
+
+    height: 240px;
+
+    overflow: hidden;
+}
+
+.hotel-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.4s ease;
+}
+
+.hotel-card:hover
+.hotel-image img {
+    transform: scale(1.04);
+}
+
+.hotel-rating {
+    position: absolute;
+
+    right: 14px;
+    bottom: 14px;
+
+    padding: 8px 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+    color: #d69b22;
+
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.hotel-content {
+    padding: 22px;
+}
+
+.hotel-label {
+    color: #087f5b;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hotel-content h3 {
+    margin-top: 7px;
+
+    color: #10231d;
+
+    font-size: 21px;
+}
+
+.hotel-content p {
+    margin-top: 10px;
+
+    min-height: 42px;
+
+    color: #6e7b76;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.hotel-location {
+    margin-top: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #50605a;
+
+    font-size: 12px;
+}
+
+.hotel-location svg {
+    color: #087f5b;
+}
+
+.hotel-price {
+    display: block;
+
+    margin-top: 16px;
+
+    color: #087f5b;
+
+    font-size: 15px;
+}
+
+.hotel-status {
+    min-height: 250px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    border: 1px solid #e1e8e5;
+    border-radius: 22px;
+
+    background: white;
+
+    color: #6e7b76;
+}
+
+.hotel-error {
+    color: #b22838;
+}
+
+@media (max-width: 950px) {
+    .hoteles-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 620px) {
+    .hoteles-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hoteles-search {
+        flex-wrap: wrap;
+    }
+
+    .hoteles-search button {
+        width: 100%;
+    }
+}

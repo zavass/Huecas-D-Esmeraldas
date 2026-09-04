@@ -1,0 +1,291 @@
+.rutas-hero {
+    padding: 95px 0 115px;
+
+    background:
+        linear-gradient(
+            130deg,
+            #13261f,
+            #0b6149
+        );
+
+    color: white;
+}
+
+.rutas-hero span {
+    color: #78e7c0;
+
+    font-size: 12px;
+    font-weight: 850;
+
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.rutas-hero h1 {
+    max-width: 760px;
+
+    margin-top: 12px;
+
+    font-size: clamp(
+        44px,
+        6vw,
+        70px
+    );
+
+    line-height: 1;
+
+    letter-spacing: -3px;
+}
+
+.rutas-hero p {
+    max-width: 580px;
+
+    margin-top: 20px;
+
+    color: #b9d3ca;
+
+    line-height: 1.8;
+}
+
+.rutas-section {
+    padding-bottom: 90px;
+
+    background: #f5f8f7;
+}
+
+.rutas-search {
+    position: relative;
+
+    top: -34px;
+
+    min-height: 76px;
+
+    padding: 12px 14px 12px 22px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    border: 1px solid #e1e8e5;
+    border-radius: 19px;
+
+    background: white;
+
+    box-shadow:
+        0 17px 45px
+        rgba(16, 35, 29, 0.12);
+}
+
+.rutas-search input {
+    flex: 1;
+
+    height: 48px;
+
+    border: none;
+    outline: none;
+
+    font-size: 14px;
+}
+
+.rutas-search svg {
+    color: #87958f;
+}
+
+.rutas-search button {
+    height: 50px;
+
+    padding: 0 30px;
+
+    border-radius: 13px;
+
+    background: #087f5b;
+    color: white;
+
+    font-weight: 800;
+}
+
+.rutas-header {
+    margin: 15px 0 28px;
+}
+
+.rutas-header span {
+    color: #087f5b;
+
+    font-size: 11px;
+    font-weight: 850;
+
+    text-transform: uppercase;
+}
+
+.rutas-header h2 {
+    margin-top: 6px;
+
+    color: #10231d;
+
+    font-size: 32px;
+}
+
+.rutas-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+}
+
+.ruta-card {
+    overflow: hidden;
+
+    border: 1px solid #e1e8e5;
+    border-radius: 22px;
+
+    background: white;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.ruta-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 18px 45px
+        rgba(16, 35, 29, 0.12);
+}
+
+.ruta-image {
+    height: 220px;
+
+    overflow: hidden;
+}
+
+.ruta-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.4s ease;
+}
+
+.ruta-card:hover
+.ruta-image img {
+    transform: scale(1.04);
+}
+
+.ruta-content {
+    padding: 22px;
+}
+
+.ruta-label {
+    color: #087f5b;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ruta-content h3 {
+    margin-top: 7px;
+
+    color: #10231d;
+
+    font-size: 20px;
+}
+
+.ruta-content > p {
+    min-height: 43px;
+
+    margin-top: 10px;
+
+    color: #6e7b76;
+
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.ruta-meta {
+    margin-top: 17px;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 12px;
+}
+
+.ruta-meta span {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    color: #53635d;
+
+    font-size: 11px;
+}
+
+.ruta-meta svg {
+    color: #087f5b;
+}
+
+.ruta-more {
+    margin-top: 20px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #087f5b;
+
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.ruta-status {
+    min-height: 250px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    border: 1px solid #e1e8e5;
+    border-radius: 22px;
+
+    background: white;
+
+    color: #6e7b76;
+}
+
+.ruta-error {
+    color: #b22838;
+}
+
+@media (max-width: 950px) {
+    .rutas-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 620px) {
+    .rutas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rutas-search {
+        flex-wrap: wrap;
+    }
+
+    .rutas-search button {
+        width: 100%;
+    }
+}
