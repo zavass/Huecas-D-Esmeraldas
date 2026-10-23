@@ -4,379 +4,231 @@ import {
 } from "react";
 
 import {
+    ArrowLeft,
+    Clock3,
+    ExternalLink,
+    Facebook,
+    Instagram,
+    MapPin,
+    Phone,
+    Star
+} from "lucide-react";
+
+import {
     Link,
     useParams
 } from "react-router-dom";
 
-import {
-    ArrowLeft,
-    Clock3,
-    MapPin,
-    Phone,
-    Star,
-    UtensilsCrossed
-} from "lucide-react";
-
 import Layout from "../../components/Layout/Layout.jsx";
-
-import {
-    obtenerHueca
-} from "../../services/huecaService.js";
-
-import {
-    obtenerImagenHueca
-} from "../../assets/images/imageMap.js";
-
+import { obtenerHuecaPorId } from "../../services/huecaService.js";
 import "./HuecaDetalle.css";
-
 
 function HuecaDetalle() {
 
-    const { id } =
-        useParams();
+    const { id } = useParams();
 
-    const [hueca, setHueca] =
-        useState(null);
-
-    const [loading, setLoading] =
-        useState(true);
-
-    const [error, setError] =
-        useState("");
-
-
-    // ===================================================
-    // CARGAR HUECA
-    // ===================================================
+    const [hueca, setHueca] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-
         cargarHueca();
-
     }, [id]);
 
-
     async function cargarHueca() {
-
         try {
-
             setLoading(true);
             setError("");
-
-            const data =
-                await obtenerHueca(id);
-
+            const data = await obtenerHuecaPorId(id);
             setHueca(data);
-
         } catch (err) {
-
-            console.error(
-                "Error cargando hueca:",
-                err
-            );
-
-            setError(
-                err.message ||
-                "No se pudo cargar la hueca."
-            );
-
+            setError(err.message || "No se pudo cargar la información.");
         } finally {
-
             setLoading(false);
         }
     }
 
-
-    // ===================================================
-    // LOADING
-    // ===================================================
-
     if (loading) {
-
         return (
-
             <Layout>
-
-                <div className="detalle-status">
-
-                    <UtensilsCrossed
-                        size={38}
-                    />
-
-                    <span>
-                        Cargando hueca...
-                    </span>
-
+                <div className="hueca-detalle-status">
+                    Cargando información...
                 </div>
-
             </Layout>
-
         );
     }
 
-
-    // ===================================================
-    // ERROR
-    // ===================================================
-
-    if (
-        error ||
-        !hueca
-    ) {
-
+    if (error || !hueca) {
         return (
-
             <Layout>
-
-                <div className="detalle-status">
-
-                    <h3>
-                        No se pudo cargar
-                        la información
-                    </h3>
-
-                    <p>
-                        {
-                            error ||
-                            "Hueca no encontrada."
-                        }
-                    </p>
-
-                    <Link
-                        to="/huecas"
-                        className="btn btn-primary"
-                    >
-                        Volver a huecas
-                    </Link>
-
+                <div className="hueca-detalle-status hueca-detalle-error">
+                    {error || "Hueca no encontrada."}
+                    <Link to="/huecas">Volver a Huecas</Link>
                 </div>
-
             </Layout>
-
         );
     }
 
-
-    // ===================================================
-    // IMAGEN
-    // ===================================================
-
-    const imagen =
-        obtenerImagenHueca(
-            hueca,
-            Number(id) - 1
-        );
-
-
-    // ===================================================
-    // RENDER
-    // ===================================================
+    const calificacion = Number(hueca.calificacion || 0);
+    const tieneCalificacion = calificacion > 0;
 
     return (
         <Layout>
+            <main className="hueca-detalle-page">
+                <div className="hueca-detalle-container">
 
-            <section className="detalle-page">
-
-                <div className="container">
-
-                    {/* VOLVER */}
-
-                    <Link
-                        to="/huecas"
-                        className="detalle-back"
-                    >
-
-                        <ArrowLeft
-                            size={17}
-                        />
-
-                        Volver a huecas
-
+                    <Link to="/huecas" className="hueca-detalle-back">
+                        <ArrowLeft size={18} />
+                        Volver a Huecas
                     </Link>
 
+                    <section className="hueca-detalle-hero">
 
-                    <div className="detalle-grid">
-
-
-                        {/* ========================= */}
-                        {/* IMAGEN */}
-                        {/* ========================= */}
-
-                        <div className="detalle-image">
-
+                        <div className="hueca-detalle-image">
                             <img
-                                src={imagen}
-                                alt={
-                                    hueca.nombre
-                                }
+                                src={hueca.imagen || "/images/logo/encabezado.png"}
+                                alt={hueca.nombre}
                             />
 
+                            {hueca.destacado && (
+                                <span className="hueca-detalle-featured">
+                                    Muy recomendada
+                                </span>
+                            )}
                         </div>
 
+                        <div className="hueca-detalle-info">
 
-                        {/* ========================= */}
-                        {/* INFORMACIÓN */}
-                        {/* ========================= */}
-
-                        <div className="detalle-info">
-
-
-                            <span className="detalle-category">
-
-                                {
-                                    hueca.categoriaNombre ||
-                                    hueca.categoria?.nombre ||
-                                    "Gastronomía"
-                                }
-
+                            <span className="hueca-detalle-category">
+                                {hueca.categoriaNombre || "Gastronomía"}
                             </span>
 
+                            <h1>{hueca.nombre}</h1>
 
-                            <h1>
-                                {hueca.nombre}
-                            </h1>
+                            <div className="hueca-detalle-badges">
+                                <span className={
+                                    tieneCalificacion
+                                        ? "hueca-detalle-rating"
+                                        : "hueca-detalle-rating hueca-rating-new"
+                                }>
+                                    {tieneCalificacion ? (
+                                        <>
+                                            <Star size={17} fill="currentColor" />
+                                            {calificacion.toFixed(1)}
+                                        </>
+                                    ) : (
+                                        "Nuevo"
+                                    )}
+                                </span>
 
-
-                            <div className="detalle-rating">
-
-                                <Star
-                                    size={18}
-                                    fill="currentColor"
-                                />
-
-                                {
-                                    Number(
-                                        hueca.calificacion ||
-                                        0
-                                    ).toFixed(1)
-                                }
-
+                                {hueca.etiqueta && (
+                                    <span className="hueca-detalle-tag">
+                                        {hueca.etiqueta}
+                                    </span>
+                                )}
                             </div>
 
-
-                            {
-                                hueca.etiqueta &&
-                                (
-
-                                    <span className="detalle-tag">
-
-                                        {
-                                            hueca.etiqueta
-                                        }
-
-                                    </span>
-
-                                )
-                            }
-
-
-                            <p className="detalle-description">
-
-                                {
-                                    hueca.descripcion ||
-                                    "Descubre los sabores tradicionales de Esmeraldas."
-                                }
-
+                            <p className="hueca-detalle-description">
+                                {hueca.descripcion || "Descubre este lugar de Esmeraldas."}
                             </p>
 
+                            {(hueca.instagramUrl ||
+                                hueca.tiktokUrl ||
+                                hueca.facebookUrl) && (
+                                <section className="hueca-social-section">
+                                    <span className="hueca-social-title">
+                                        Redes oficiales
+                                    </span>
 
-                            {/* ========================= */}
-                            {/* DATOS */}
-                            {/* ========================= */}
+                                    <div className="hueca-social-buttons">
 
-                            <div className="detalle-data">
+                                        {hueca.instagramUrl && (
+                                            <a
+                                                href={hueca.instagramUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hueca-social-button instagram"
+                                            >
+                                                <Instagram size={20} />
+                                                Instagram
+                                                <ExternalLink size={15} />
+                                            </a>
+                                        )}
 
+                                        {hueca.tiktokUrl && (
+                                            <a
+                                                href={hueca.tiktokUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hueca-social-button tiktok"
+                                            >
+                                                <span className="tiktok-icon">♪</span>
+                                                TikTok
+                                                <ExternalLink size={15} />
+                                            </a>
+                                        )}
 
+                                        {hueca.facebookUrl && (
+                                            <a
+                                                href={hueca.facebookUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hueca-social-button facebook"
+                                            >
+                                                <Facebook size={20} />
+                                                Facebook
+                                                <ExternalLink size={15} />
+                                            </a>
+                                        )}
+
+                                    </div>
+                                </section>
+                            )}
+
+                            <div className="hueca-detalle-data">
                                 <div>
-
-                                    <MapPin
-                                        size={19}
-                                    />
-
-                                    <section>
-
-                                        <small>
-                                            Dirección
-                                        </small>
-
-                                        <strong>
-
-                                            {
-                                                hueca.direccion ||
-                                                "Esmeraldas"
-                                            }
-
-                                        </strong>
-
-                                    </section>
-
+                                    <span className="detail-data-icon">
+                                        <MapPin size={19} />
+                                    </span>
+                                    <div>
+                                        <small>Dirección</small>
+                                        <strong>{hueca.direccion || "Esmeraldas"}</strong>
+                                    </div>
                                 </div>
 
-
                                 <div>
-
-                                    <Phone
-                                        size={19}
-                                    />
-
-                                    <section>
-
-                                        <small>
-                                            Teléfono
-                                        </small>
-
-                                        <strong>
-
-                                            {
-                                                hueca.telefono ||
-                                                "No disponible"
-                                            }
-
-                                        </strong>
-
-                                    </section>
-
+                                    <span className="detail-data-icon">
+                                        <Phone size={19} />
+                                    </span>
+                                    <div>
+                                        <small>Teléfono</small>
+                                        {hueca.telefono && hueca.telefono !== "Consultar" ? (
+                                            <a href={`tel:${hueca.telefono}`}>
+                                                {hueca.telefono}
+                                            </a>
+                                        ) : (
+                                            <strong>Consultar</strong>
+                                        )}
+                                    </div>
                                 </div>
 
-
                                 <div>
-
-                                    <Clock3
-                                        size={19}
-                                    />
-
-                                    <section>
-
-                                        <small>
-                                            Horario
-                                        </small>
-
-                                        <strong>
-
-                                            {
-                                                hueca.horario ||
-                                                "Horario no disponible"
-                                            }
-
-                                        </strong>
-
-                                    </section>
-
+                                    <span className="detail-data-icon">
+                                        <Clock3 size={19} />
+                                    </span>
+                                    <div>
+                                        <small>Horario</small>
+                                        <strong>{hueca.horario || "Consultar horario"}</strong>
+                                    </div>
                                 </div>
-
                             </div>
 
                         </div>
-
-                    </div>
-
+                    </section>
                 </div>
-
-            </section>
-
+            </main>
         </Layout>
     );
 }
-
 
 export default HuecaDetalle;

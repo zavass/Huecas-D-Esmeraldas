@@ -1,183 +1,152 @@
-import { useState } from "react";
+import {
+    Building2,
+    Compass,
+    Home,
+    MapPinned,
+    Newspaper,
+    Search,
+    Store
+} from "lucide-react";
 
 import {
     Link,
     NavLink
 } from "react-router-dom";
 
-import {
-    Compass,
-    Heart,
-    LogOut,
-    Menu,
-    Shield,
-    UtensilsCrossed,
-    User,
-    X
-} from "lucide-react";
-
-import {
-    cerrarSesion,
-    esAdmin,
-    estaAutenticado,
-    obtenerUsuario
-} from "../../services/authService.js";
-
 import "./Navbar.css";
 
+
 function Navbar() {
-    const [open, setOpen] = useState(false);
 
-    const autenticado = estaAutenticado();
-    const usuario = obtenerUsuario();
-    const admin = esAdmin();
+    const navClass =
+        ({ isActive }) =>
+            isActive
+                ? "navbar-link active"
+                : "navbar-link";
 
-    const closeMenu = () => {
-        setOpen(false);
-    };
-
-    const salir = () => {
-        cerrarSesion();
-        window.location.href = "/";
-    };
 
     return (
-        <header className="navbar">
+        <header className="navbar-shell">
 
-            <div className="container navbar-inner">
+            <nav className="navbar-container">
 
                 <Link
                     to="/"
                     className="navbar-brand"
-                    onClick={closeMenu}
                 >
-                    <div className="brand-icon">
-                        <UtensilsCrossed size={22} />
-                    </div>
 
-                    <div>
-                        <span className="brand-title">
+                    <img
+                        src="/images/logo/esmeralda.png"
+                        alt="Las Huecas Esmeraldas"
+                        className="navbar-logo"
+                    />
+
+
+                    <div className="navbar-brand-text">
+
+                        <strong>
                             Las Huecas
+                        </strong>
+
+                        <span>
+                            ESMERALDAS
                         </span>
 
-                        <span className="brand-subtitle">
-                            Esmeraldas
-                        </span>
                     </div>
+
+
+                    <div className="navbar-divider" />
+
+
+                    <div className="navbar-slogan">
+                        Sabores que
+                        <br />
+                        cuentan historias
+                    </div>
+
                 </Link>
 
-                <nav
-                    className={
-                        open
-                            ? "navbar-links navbar-links-open"
-                            : "navbar-links"
-                    }
-                >
+
+                <div className="navbar-menu">
+
                     <NavLink
                         to="/"
-                        onClick={closeMenu}
+                        end
+                        className={navClass}
                     >
-                        Inicio
+                        <Home size={17} />
+                        <span>Inicio</span>
                     </NavLink>
+
 
                     <NavLink
                         to="/huecas"
-                        onClick={closeMenu}
+                        className={navClass}
                     >
-                        Huecas
+                        <Store size={17} />
+                        <span>Huecas</span>
                     </NavLink>
+
 
                     <NavLink
                         to="/hoteles"
-                        onClick={closeMenu}
+                        className={navClass}
                     >
-                        Hoteles
+                        <Building2 size={17} />
+                        <span>Hoteles</span>
                     </NavLink>
+
 
                     <NavLink
                         to="/rutas"
-                        onClick={closeMenu}
+                        className={navClass}
                     >
-                        Rutas
+                        <MapPinned size={17} />
+                        <span>Rutas</span>
                     </NavLink>
 
-                    {autenticado && (
-                        <NavLink
-                            to="/favoritos"
-                            onClick={closeMenu}
-                            className="favorites-link"
-                        >
-                            <Heart size={17} />
-                            Favoritos
-                        </NavLink>
-                    )}
 
-                    {admin && (
-                        <NavLink
-                            to="/admin/dashboard"
-                            onClick={closeMenu}
-                            className="admin-link"
-                        >
-                            <Shield size={17} />
-                            Administración
-                        </NavLink>
-                    )}
-                </nav>
-
-                <div className="navbar-actions">
-
-                    {!autenticado ? (
-                        <>
-                            <Link
-                                to="/login"
-                                className="navbar-login"
-                            >
-                                Iniciar sesión
-                            </Link>
-
-                            <Link
-                                to="/huecas"
-                                className="btn btn-primary navbar-explore"
-                            >
-                                <Compass size={17} />
-                                Explorar
-                            </Link>
-                        </>
-                    ) : (
-                        <>
-                            <div className="navbar-user">
-                                <User size={17} />
-
-                                <span>
-                                    {usuario?.nombre || "Usuario"}
-                                </span>
-                            </div>
-
-                            <button
-                                type="button"
-                                className="navbar-logout"
-                                onClick={salir}
-                            >
-                                <LogOut size={17} />
-                            </button>
-                        </>
-                    )}
-
-                    <button
-                        type="button"
-                        className="navbar-menu-btn"
-                        onClick={() => setOpen(!open)}
-                        aria-label="Abrir menú"
+                    <NavLink
+                        to="/noticias"
+                        className={navClass}
                     >
-                        {open ? <X /> : <Menu />}
-                    </button>
+                        <Newspaper size={17} />
+                        <span>Noticias</span>
+                    </NavLink>
 
                 </div>
 
-            </div>
+
+                <div className="navbar-actions">
+
+                    <div className="navbar-search">
+
+                        <Search size={17} />
+
+                        <input
+                            type="search"
+                            placeholder="Buscar lugares..."
+                            aria-label="Buscar lugares"
+                        />
+
+                    </div>
+
+
+                    <Link
+                        to="/huecas"
+                        className="navbar-explore"
+                    >
+                        <Compass size={18} />
+                        <span>Explorar</span>
+                    </Link>
+
+                </div>
+
+            </nav>
 
         </header>
     );
 }
+
 
 export default Navbar;

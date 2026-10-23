@@ -1,329 +1,207 @@
 import {
-    Link
-} from "react-router-dom";
+    useEffect,
+    useRef,
+    useState
+} from "react";
 
 import {
-    ArrowRight,
-    ChefHat,
-    Hotel,
-    MapPinned,
-    Search,
-    Sparkles,
-    Star,
-    Utensils
+    MapPin,
+    Waves
 } from "lucide-react";
 
-import Layout
-    from "../../components/Layout/Layout.jsx";
+import Layout from "../../components/Layout/Layout.jsx";
 
 import "./Home.css";
 
+
 function Home() {
-    const categorias = [
-        {
-            icon: <Utensils size={25} />,
-            title: "Comida típica",
-            text:
-                "Disfruta los sabores tradicionales de la gastronomía esmeraldeña."
-        },
-        {
-            icon: <ChefHat size={25} />,
-            title: "Las mejores huecas",
-            text:
-                "Descubre lugares únicos recomendados por quienes conocen la ciudad."
-        },
-        {
-            icon: <Hotel size={25} />,
-            title: "Dónde hospedarte",
-            text:
-                "Encuentra hoteles y opciones para disfrutar tu visita a Esmeraldas."
-        },
-        {
-            icon: <MapPinned size={25} />,
-            title: "Rutas",
-            text:
-                "Conoce rutas para llegar fácilmente a tus destinos favoritos."
+
+    const islandAreaRef =
+        useRef(null);
+
+    const [rotation, setRotation] =
+        useState({
+            x: 0,
+            y: 0
+        });
+
+
+    useEffect(() => {
+
+        document.body.classList.add(
+            "home-page-background"
+        );
+
+        return () => {
+
+            document.body.classList.remove(
+                "home-page-background"
+            );
+
+        };
+
+    }, []);
+
+
+    function handleIslandMouseMove(event) {
+
+        const element =
+            islandAreaRef.current;
+
+        if (!element) {
+            return;
         }
-    ];
+
+        const rect =
+            element.getBoundingClientRect();
+
+        const mouseX =
+            event.clientX - rect.left;
+
+        const mouseY =
+            event.clientY - rect.top;
+
+        const centerX =
+            rect.width / 2;
+
+        const centerY =
+            rect.height / 2;
+
+        const rotateY =
+            (
+                (mouseX - centerX)
+                /
+                centerX
+            ) * 5;
+
+        const rotateX =
+            (
+                (centerY - mouseY)
+                /
+                centerY
+            ) * 4;
+
+        setRotation({
+            x: rotateX,
+            y: rotateY
+        });
+    }
+
+
+    function handleIslandMouseLeave() {
+
+        setRotation({
+            x: 0,
+            y: 0
+        });
+    }
+
 
     return (
         <Layout>
 
-            <section className="hero">
+            <main className="home-premium">
 
-                <div className="hero-glow hero-glow-one" />
+                <div className="home-background-overlay" />
 
-                <div className="hero-glow hero-glow-two" />
+                <div className="home-light home-light-left" />
 
-                <div className="container hero-content">
+                <div className="home-light home-light-center" />
 
-                    <div className="hero-copy">
 
-                        <div className="hero-badge">
+                <div className="container home-main-grid">
 
-                            <Sparkles size={15} />
 
-                            Descubre el sabor
-                            de Esmeraldas
+                    {/* =========================
+                        TEXTO
+                    ========================= */}
+
+                    <section className="home-copy">
+
+                        <div className="home-eyebrow">
+
+                            <MapPin size={17} />
+
+                            <span>
+                                Tierra Verde del Ecuador
+                            </span>
 
                         </div>
+
 
                         <h1>
-                            Tu próxima
+
+                            Descubre
+
                             <span>
-                                {" "}experiencia{" "}
+                                Esmeraldas
                             </span>
-                            comienza aquí.
+
                         </h1>
 
-                        <p>
-                            Conoce las mejores
-                            huecas, platos tradicionales,
-                            hoteles y rutas para disfrutar
-                            Esmeraldas como un verdadero local.
-                        </p>
 
-                        <div className="hero-buttons">
+                        <div className="home-title-line" />
 
-                            <Link
-                                to="/huecas"
-                                className="btn btn-primary hero-main-btn"
-                            >
-                                Explorar huecas
 
-                                <ArrowRight
-                                    size={18}
-                                />
-                            </Link>
+                        <h2>
 
-                            <Link
-                                to="/rutas"
-                                className="btn btn-outline"
-                            >
-                                Ver rutas
-                            </Link>
+                            Entre sabores, playa y mar
 
-                        </div>
+                            <Waves size={30} />
 
-                        <div className="hero-stats">
-
-                            <div>
-                                <strong>
-                                    +30
-                                </strong>
-
-                                <span>
-                                    Lugares
-                                </span>
-                            </div>
-
-                            <div>
-                                <strong>
-                                    4.8
-                                </strong>
-
-                                <span>
-                                    <Star
-                                        size={13}
-                                        fill="currentColor"
-                                    />
-
-                                    Valoración
-                                </span>
-                            </div>
-
-                            <div>
-                                <strong>
-                                    100%
-                                </strong>
-
-                                <span>
-                                    Esmeraldeño
-                                </span>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div className="hero-visual">
-
-                        <div className="hero-main-card">
-
-                            <div className="hero-image-placeholder">
-
-                                <div className="hero-food-symbol">
-
-                                    <ChefHat
-                                        size={70}
-                                    />
-
-                                </div>
-
-                            </div>
-
-                            <div className="hero-card-info">
-
-                                <div>
-
-                                    <span className="hero-card-label">
-                                        Recomendación
-                                    </span>
-
-                                    <h3>
-                                        Sazón Esmeraldeña
-                                    </h3>
-
-                                    <p>
-                                        Tradición del Pacífico
-                                    </p>
-
-                                </div>
-
-                                <div className="hero-rating">
-
-                                    <Star
-                                        size={16}
-                                        fill="currentColor"
-                                    />
-
-                                    4.8
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div className="floating-card floating-search">
-
-                            <Search
-                                size={19}
-                            />
-
-                            <div>
-
-                                <strong>
-                                    Encuentra tu hueca
-                                </strong>
-
-                                <span>
-                                    Busca por nombre
-                                    o categoría
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <section className="section discovery">
-
-                <div className="container">
-
-                    <div className="section-header">
-
-                        <span className="section-eyebrow">
-                            Descubre Esmeraldas
-                        </span>
-
-                        <h2 className="section-title">
-                            Todo lo que necesitas
-                            para vivir la ciudad.
                         </h2>
 
-                        <p className="section-description">
-                            Gastronomía, alojamiento y
-                            rutas reunidas en un solo lugar.
-                        </p>
+                    </section>
 
-                    </div>
 
-                    <div className="discovery-grid">
+                    {/* =========================
+                        ISLA 3D
+                    ========================= */}
 
-                        {categorias.map(
-                            (item, index) => (
-                                <article
-                                    className="discovery-card"
-                                    key={index}
-                                >
+                    <section
+                        ref={islandAreaRef}
+                        className="island-scene-3d"
+                        onMouseMove={handleIslandMouseMove}
+                        onMouseLeave={handleIslandMouseLeave}
+                    >
 
-                                    <div className="discovery-icon">
-                                        {item.icon}
-                                    </div>
+                        <div className="island-backlight" />
 
-                                    <h3>
-                                        {item.title}
-                                    </h3>
+                        <div className="island-shadow" />
 
-                                    <p>
-                                        {item.text}
-                                    </p>
 
-                                    <span className="discovery-arrow">
-                                        <ArrowRight
-                                            size={18}
-                                        />
-                                    </span>
+                        <div
+                            className="island-perspective"
+                            style={{
+                                transform: `
+                                    rotateX(${rotation.x}deg)
+                                    rotateY(${rotation.y}deg)
+                                `
+                            }}
+                        >
 
-                                </article>
-                            )
-                        )}
+                            <div className="island-floating-animation">
 
-                    </div>
+                                <img
+                                    src="/images/logo/isla-esmeraldas.png"
+                                    alt="Isla tropical de Esmeraldas"
+                                    className="island-main-image"
+                                    draggable="false"
+                                />
 
-                </div>
-
-            </section>
-
-            <section className="cta-section">
-
-                <div className="container">
-
-                    <div className="cta-card">
-
-                        <div>
-
-                            <span className="section-eyebrow cta-eyebrow">
-                                Cultura & Gastronomía
-                            </span>
-
-                            <h2>
-                                Hay lugares que
-                                no aparecen en las guías.
-                            </h2>
-
-                            <p>
-                                Nosotros te ayudamos
-                                a encontrarlos.
-                            </p>
+                            </div>
 
                         </div>
 
-                        <Link
-                            to="/huecas"
-                            className="btn btn-light"
-                        >
-                            Descubrir ahora
-
-                            <ArrowRight
-                                size={18}
-                            />
-                        </Link>
-
-                    </div>
+                    </section>
 
                 </div>
 
-            </section>
+            </main>
 
         </Layout>
     );
 }
+
 
 export default Home;

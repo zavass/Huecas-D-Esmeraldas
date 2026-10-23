@@ -1,52 +1,142 @@
-import { apiRequest } from "./api.js";
+const API_URL = "http://localhost:8080/api";
 
-export async function login(
-    correo,
-    password
-) {
-    return apiRequest(
-        "/auth/login",
+
+/* =========================================================
+   PROCESAR RESPUESTAS
+========================================================= */
+
+async function procesarRespuesta(response) {
+
+    let data = null;
+
+    try {
+        data = await response.json();
+    } catch {
+        data = null;
+    }
+
+    if (!response.ok) {
+
+        const mensaje =
+            data?.message ||
+            data?.error ||
+            "Ocurrió un error al comunicarse con el servidor.";
+
+        throw new Error(mensaje);
+    }
+
+    return data;
+}
+
+
+/* =========================================================
+   INICIAR SESIÓN
+========================================================= */
+
+export async function loginUsuario(datos) {
+
+    const response = await fetch(
+        `${API_URL}/auth/login`,
         {
             method: "POST",
 
+            headers: {
+                "Content-Type": "application/json"
+            },
+
             body: JSON.stringify({
-                correo,
-                password
+                correo: datos.correo,
+                password: datos.password
             })
         }
     );
+
+    return procesarRespuesta(response);
 }
 
+
+/* =========================================================
+   REGISTRAR USUARIO
+========================================================= */
+
+export async function registrarUsuario(datos) {
+
+    const response = await fetch(
+        `${API_URL}/auth/register`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                nombre: datos.nombre,
+                correo: datos.correo,
+                telefono: datos.telefono,
+                password: datos.password,
+                confirmarPassword: datos.confirmarPassword
+            })
+        }
+    );
+
+    return procesarRespuesta(response);
+}
+
+
+/* =========================================================
+   GUARDAR SESIÓN
+========================================================= */
+
 export function guardarSesion(data) {
-    if (!data?.token) {
-        throw new Error(
-            "El servidor no devolvió un token."
+
+    if (!data) {
+        return;
+    }
+
+    if (data.token) {
+
+        localStorage.setItem(
+            "token",
+            data.token
         );
     }
 
     localStorage.setItem(
-        "token",
-        data.token
-    );
-
-    const usuario = {
-        id: data.id,
-        nombre: data.nombre,
-        correo: data.correo,
-        rol: data.rol
-    };
-
-    localStorage.setItem(
         "usuario",
-        JSON.stringify(usuario)
+        JSON.stringify(data)
     );
 }
 
+
+/* =========================================================
+   CERRAR SESIÓN
+========================================================= */
+
+export function cerrarSesion() {
+
+    localStorage.removeItem("token");
+
+    localStorage.removeItem("usuario");
+}
+
+
+/* =========================================================
+   OBTENER TOKEN
+========================================================= */
+
 export function obtenerToken() {
+
     return localStorage.getItem("token");
 }
 
+
+/* =========================================================
+   OBTENER USUARIO
+========================================================= */
+
 export function obtenerUsuario() {
+
     const usuario =
         localStorage.getItem("usuario");
 
@@ -55,27 +145,53 @@ export function obtenerUsuario() {
     }
 
     try {
+
         return JSON.parse(usuario);
+
     } catch {
+
         return null;
     }
 }
 
+
+/* =========================================================
+   VERIFICAR AUTENTICACIÓN
+========================================================= */
+
 export function estaAutenticado() {
-    return Boolean(obtenerToken());
-}
 
-export function esAdmin() {
-    const usuario =
-        obtenerUsuario();
-
-    return (
-        usuario?.rol?.toUpperCase()
-        === "ADMIN"
+    return Boolean(
+        obtenerToken()
     );
 }
 
-export function cerrarSesion() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
+
+/* =========================================================
+   VERIFICAR ADMIN
+========================================================= */
+
+export function esAdmin() {
+
+    const usuario =
+        obtenerUsuario();
+
+    if (!usuario) {
+        return false;
+    }
+
+    return (
+        String(usuario.rol)
+            .toUpperCase() === "ADMIN"
+    );
+}
+
+
+/* =========================================================
+   ALIAS POR COMPATIBILIDAD
+========================================================= */
+
+export function esAdministrador() {
+
+    return esAdmin();
 }

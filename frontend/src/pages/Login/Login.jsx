@@ -3,33 +3,39 @@ import {
 } from "react";
 
 import {
+    ArrowLeft,
+    ArrowRight,
+    Eye,
+    EyeOff,
+    LockKeyhole,
+    Mail,
+    MapPin
+} from "lucide-react";
+
+import {
     Link,
     useNavigate
 } from "react-router-dom";
 
 import {
-    ArrowLeft,
-    Eye,
-    EyeOff,
-    LockKeyhole,
-    Mail,
-    ShieldCheck,
-    UtensilsCrossed
-} from "lucide-react";
-
-import {
-    guardarSesion,
-    login
+    loginUsuario
 } from "../../services/authService.js";
-
 
 import "./Login.css";
 
+
 function Login() {
+
     const navigate =
         useNavigate();
 
-    const [showPassword, setShowPassword] =
+    const [correo, setCorreo] =
+        useState("");
+
+    const [password, setPassword] =
+        useState("");
+
+    const [mostrarPassword, setMostrarPassword] =
         useState(false);
 
     const [loading, setLoading] =
@@ -38,291 +44,350 @@ function Login() {
     const [error, setError] =
         useState("");
 
-    const [form, setForm] =
-        useState({
-            correo: "",
-            password: ""
-        });
 
-    const handleChange = event => {
-        const {
-            name,
-            value
-        } = event.target;
+    async function iniciarSesion(event) {
 
-        setForm(
-            previous => ({
-                ...previous,
-                [name]: value
-            })
-        );
+        event.preventDefault();
 
-        setError("");
-    };
-
-    const handleSubmit =
-        async event => {
-
-            event.preventDefault();
+        try {
 
             setLoading(true);
             setError("");
 
-            try {
-                const response =
-                    await login(
-                        form.correo.trim(),
-                        form.password
-                    );
+            const data =
+                await loginUsuario({
+                    correo,
+                    password
+                });
 
-                guardarSesion(response);
+            localStorage.setItem(
+                "token",
+                data.token
+            );
 
-                if (
-                    response.rol
-                        ?.toUpperCase()
-                    === "ADMIN"
-                ) {
-                    navigate(
-                        "/admin/dashboard",
-                        {
-                            replace: true
-                        }
-                    );
-                } else {
-                    navigate(
-                        "/",
-                        {
-                            replace: true
-                        }
-                    );
-                }
+            localStorage.setItem(
+                "usuario",
+                JSON.stringify(data)
+            );
 
-            } catch (err) {
-                setError(
-                    err.message ||
-                    "No se pudo iniciar sesión."
-                );
+            navigate("/");
 
-            } finally {
-                setLoading(false);
-            }
-        };
+        } catch (err) {
+
+            setError(
+                err.response?.data?.message ||
+                err.message ||
+                "No se pudo iniciar sesión."
+            );
+
+        } finally {
+
+            setLoading(false);
+        }
+    }
+
 
     return (
-        <div className="login-page">
 
-            <section className="login-brand-panel">
+        <main className="login-page">
 
-                <Link
-                    to="/"
-                    className="login-back"
-                >
-                    <ArrowLeft
-                        size={17}
-                    />
 
-                    Volver al inicio
-                </Link>
+            {/* =================================================
+                LADO IZQUIERDO
+            ================================================= */}
 
-                <div className="login-brand-content">
+            <section className="login-visual">
 
-                    <div className="login-logo">
+                <div className="login-visual-overlay" />
 
-                        <UtensilsCrossed
-                            size={30}
+
+                <div className="login-visual-content">
+
+                    <Link
+                        to="/"
+                        className="login-back"
+                    >
+                        <ArrowLeft size={18} />
+
+                        Volver al inicio
+                    </Link>
+
+
+                    <div className="login-place">
+
+                        <MapPin size={17} />
+
+                        Esmeraldas, Ecuador
+
+                    </div>
+
+
+                    <div className="login-brand">
+
+                        <img
+                            src="/images/logo/esmeralda.png"
+                            alt="Las Huecas Esmeraldas"
                         />
 
+                        <div>
+
+                            <strong>
+                                Las Huecas
+                            </strong>
+
+                            <span>
+                                Esmeraldas
+                            </span>
+
+                        </div>
+
                     </div>
 
-                    <span>
-                        Las Huecas
-                        de Esmeraldas
-                    </span>
 
                     <h1>
-                        Sabores que cuentan
-                        nuestra historia.
-                    </h1>
 
-                    <p>
-                        Descubre los rincones
-                        gastronómicos que hacen
-                        única a Esmeraldas.
-                    </p>
+                        Descubre una
+                        <br />
 
-                </div>
-
-                <div className="login-security">
-
-                    <ShieldCheck
-                        size={18}
-                    />
-
-                    Acceso seguro
-                    mediante JWT
-
-                </div>
-
-            </section>
-
-            <section className="login-form-panel">
-
-                <form
-                    className="login-form"
-                    onSubmit={
-                        handleSubmit
-                    }
-                >
-
-                    <div className="login-form-heading">
-
-                        <span className="login-mini-title">
-                            Bienvenido
-                        </span>
-
-                        <h2>
-                            Inicia sesión
-                        </h2>
-
-                        <p>
-                            Ingresa tus datos
-                            para continuar.
-                        </p>
-
-                    </div>
-
-                    {error && (
-                        <div className="login-error">
-                            {error}
-                        </div>
-                    )}
-
-                    <div className="form-group">
-
-                        <label htmlFor="correo">
-                            Correo electrónico
-                        </label>
-
-                        <div className="input-icon">
-
-                            <Mail
-                                size={18}
-                            />
-
-                            <input
-                                id="correo"
-                                type="email"
-                                name="correo"
-                                placeholder="tu@correo.com"
-                                value={
-                                    form.correo
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                autoComplete="email"
-                                required
-                            />
-
-                        </div>
-
-                    </div>
-
-                    <div className="form-group">
-
-                        <label htmlFor="password">
-                            Contraseña
-                        </label>
-
-                        <div className="input-icon">
-
-                            <LockKeyhole
-                                size={18}
-                            />
-
-                            <input
-                                id="password"
-                                type={
-                                    showPassword
-                                        ? "text"
-                                        : "password"
-                                }
-                                name="password"
-                                placeholder="••••••••"
-                                value={
-                                    form.password
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                autoComplete="current-password"
-                                required
-                            />
-
-                            <button
-                                type="button"
-                                className="password-toggle"
-                                onClick={() =>
-                                    setShowPassword(
-                                        previous =>
-                                            !previous
-                                    )
-                                }
-                                aria-label={
-                                    showPassword
-                                        ? "Ocultar contraseña"
-                                        : "Mostrar contraseña"
-                                }
-                            >
-                                {
-                                    showPassword
-                                        ? (
-                                            <EyeOff
-                                                size={18}
-                                            />
-                                        )
-                                        : (
-                                            <Eye
-                                                size={18}
-                                            />
-                                        )
-                                }
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="login-submit"
-                        disabled={loading}
-                    >
-                        {
-                            loading
-                                ? "Ingresando..."
-                                : "Iniciar sesión"
-                        }
-                    </button>
-
-                    <div className="login-test-account">
-
-                        <strong>
-                            Acceso administrativo
-                        </strong>
+                        ciudad
+                        <br />
 
                         <span>
-                            admin@lashuecas.ec
+                            llena de
+                            <br />
+                            historia.
+                        </span>
+
+                    </h1>
+
+
+                    <p>
+
+                        Gastronomía, cultura,
+                        naturaleza y lugares
+                        que hacen de Esmeraldas
+                        una tierra única frente
+                        al Pacífico.
+
+                    </p>
+
+
+                    <div className="login-country-card">
+
+                        <span>
+                            ✨
+                        </span>
+
+                        <div>
+
+                            <small>
+                                Conoce Esmeraldas
+                            </small>
+
+                            <strong>
+                                Tierra Verde del Ecuador
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className="login-security">
+
+                        🔒
+
+                        Acceso seguro mediante JWT
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* =================================================
+                FORMULARIO
+            ================================================= */}
+
+            <section className="login-form-side">
+
+                <div className="login-form-container">
+
+
+                    <span className="login-welcome">
+                        Bienvenido
+                    </span>
+
+
+                    <h2>
+                        Inicia sesión
+                    </h2>
+
+
+                    <p className="login-subtitle">
+
+                        Ingresa tus datos para
+                        continuar explorando Esmeraldas.
+
+                    </p>
+
+
+                    <form
+                        onSubmit={iniciarSesion}
+                        className="login-form"
+                    >
+
+                        <label>
+
+                            Correo electrónico
+
+                            <div className="login-input">
+
+                                <Mail size={19} />
+
+                                <input
+                                    type="email"
+                                    placeholder="tu@correo.com"
+                                    value={correo}
+                                    onChange={
+                                        event =>
+                                            setCorreo(
+                                                event.target.value
+                                            )
+                                    }
+                                    required
+                                />
+
+                            </div>
+
+                        </label>
+
+
+                        <label>
+
+                            Contraseña
+
+                            <div className="login-input">
+
+                                <LockKeyhole size={19} />
+
+                                <input
+                                    type={
+                                        mostrarPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={
+                                        event =>
+                                            setPassword(
+                                                event.target.value
+                                            )
+                                    }
+                                    required
+                                />
+
+
+                                <button
+                                    type="button"
+                                    className="login-eye"
+                                    onClick={() =>
+                                        setMostrarPassword(
+                                            !mostrarPassword
+                                        )
+                                    }
+                                >
+
+                                    {mostrarPassword
+                                        ? <EyeOff size={18} />
+                                        : <Eye size={18} />
+                                    }
+
+                                </button>
+
+                            </div>
+
+                        </label>
+
+
+                        {error && (
+
+                            <div className="login-error">
+                                {error}
+                            </div>
+
+                        )}
+
+
+                        <button
+                            type="submit"
+                            className="login-submit"
+                            disabled={loading}
+                        >
+
+                            {
+                                loading
+                                    ? "Ingresando..."
+                                    : "Iniciar sesión"
+                            }
+
+                            {!loading && (
+                                <ArrowRight size={18} />
+                            )}
+
+                        </button>
+
+                    </form>
+
+
+                    {/* =========================================
+                        REGISTRO
+                    ========================================= */}
+
+                    <div className="login-register">
+
+                        <span>
+                            ¿Aún no tienes cuenta?
+                        </span>
+
+                        <p>
+                            Regístrate gratis y guarda
+                            tus lugares y rutas favoritas.
+                        </p>
+
+                        <Link
+                            to="/registro"
+                            className="login-register-button"
+                        >
+                            Crear mi cuenta
+
+                            <ArrowRight size={18} />
+                        </Link>
+
+                    </div>
+
+
+                    <div className="login-footer">
+
+                        <span>
+                            Las Huecas de Esmeraldas
+                        </span>
+
+                        <span>
+                            Sabores, turismo y cultura.
                         </span>
 
                     </div>
 
-                </form>
+                </div>
 
             </section>
 
-        </div>
+        </main>
     );
 }
+
 
 export default Login;

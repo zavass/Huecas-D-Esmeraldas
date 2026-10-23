@@ -1,9 +1,11 @@
 package com.eshuecas.backend.repository;
 
-import com.eshuecas.backend.entity.Hotel;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.eshuecas.backend.entity.Hotel;
 
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
@@ -22,6 +24,15 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             String nombre,
             String descripcion
     );
+
+    // Buscar por nombre exacto
+    Optional<Hotel> findByNombreIgnoreCase(String nombre);
+
+    /*
+     * Se usa en DataSeeder para evitar duplicados si un nombre
+     * antiguo quedó con caracteres dañados.
+     */
+    Optional<Hotel> findFirstByImagenOrderByIdAsc(String imagen);
 
     long countByActivoTrue();
 }

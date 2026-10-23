@@ -1,5 +1,6 @@
 import {
     useEffect,
+    useMemo,
     useState
 } from "react";
 
@@ -8,14 +9,23 @@ import {
 } from "react-router-dom";
 
 import {
+    ArrowRight,
+    BedDouble,
+    CalendarDays,
+    Car,
+    ChevronDown,
+    Coffee,
+    Heart,
     Hotel,
     MapPin,
     Search,
-    Star
+    Star,
+    UtensilsCrossed,
+    Waves,
+    Wifi
 } from "lucide-react";
 
-import Layout
-    from "../../components/Layout/Layout.jsx";
+import Layout from "../../components/Layout/Layout.jsx";
 
 import {
     listarHoteles
@@ -28,23 +38,67 @@ import {
 
 import "./Hoteles.css";
 
+
+/* =========================================================
+   DATOS VISUALES DE LAS TARJETAS
+========================================================= */
+
+const detallesVisuales = [
+    {
+        etiqueta: "Más popular",
+        servicios: [
+            { icono: Wifi, texto: "WiFi" },
+            { icono: Waves, texto: "Piscina" },
+            { icono: UtensilsCrossed, texto: "Restaurante" },
+            { icono: Car, texto: "Parqueadero" }
+        ]
+    },
+    {
+        etiqueta: "Excelente ubicación",
+        servicios: [
+            { icono: Wifi, texto: "WiFi" },
+            { icono: Coffee, texto: "Desayuno" },
+            { icono: BedDouble, texto: "Confort" },
+            { icono: Car, texto: "Parqueadero" }
+        ]
+    },
+    {
+        etiqueta: "Vista al mar",
+        servicios: [
+            { icono: Wifi, texto: "WiFi" },
+            { icono: UtensilsCrossed, texto: "Restaurante" },
+            { icono: Coffee, texto: "Bar" },
+            { icono: Car, texto: "Parqueadero" }
+        ]
+    }
+];
+
+
 function Hoteles() {
 
-    const [hoteles, setHoteles] =
-        useState([]);
+    const [hoteles, setHoteles] = useState([]);
 
-    const [q, setQ] =
-        useState("");
+    const [q, setQ] = useState("");
 
-    const [loading, setLoading] =
-        useState(true);
+    const [zona, setZona] = useState("todas");
 
-    const [error, setError] =
-        useState("");
+    const [precio, setPrecio] = useState("todos");
+
+    const [orden, setOrden] = useState("recomendados");
+
+    const [loading, setLoading] = useState(true);
+
+    const [error, setError] = useState("");
+
+
+    /* =====================================================
+       CARGAR HOTELES
+    ===================================================== */
 
     useEffect(() => {
         cargarHoteles();
     }, []);
+
 
     async function cargarHoteles() {
 
@@ -53,8 +107,7 @@ function Hoteles() {
             setLoading(true);
             setError("");
 
-            const data =
-                await listarHoteles(q);
+            const data = await listarHoteles(q);
 
             setHoteles(
                 Array.isArray(data)
@@ -75,6 +128,11 @@ function Hoteles() {
         }
     }
 
+
+    /* =====================================================
+       BUSCAR
+    ===================================================== */
+
     function buscar(event) {
 
         event.preventDefault();
@@ -82,197 +140,725 @@ function Hoteles() {
         cargarHoteles();
     }
 
+
+    /* =====================================================
+       FILTRADO Y ORDENAMIENTO
+    ===================================================== */
+
+    const hotelesFiltrados = useMemo(() => {
+
+        let resultado = [...hoteles];
+
+
+        /* ZONA */
+
+        if (zona !== "todas") {
+
+            resultado = resultado.filter(
+                hotel => {
+
+                    const direccion =
+                        String(
+                            hotel.direccion || ""
+                        ).toLowerCase();
+
+                    return direccion.includes(
+                        zona.toLowerCase()
+                    );
+                }
+            );
+        }
+
+
+        /* PRECIO */
+
+        if (precio === "economico") {
+
+            resultado = resultado.filter(
+                hotel =>
+                    Number(
+                        hotel.precioDesde || 0
+                    ) <= 40
+            );
+        }
+
+        if (precio === "medio") {
+
+            resultado = resultado.filter(
+                hotel => {
+
+                    const valor =
+                        Number(
+                            hotel.precioDesde || 0
+                        );
+
+                    return (
+                        valor > 40 &&
+                        valor <= 60
+                    );
+                }
+            );
+        }
+
+        if (precio === "premium") {
+
+            resultado = resultado.filter(
+                hotel =>
+                    Number(
+                        hotel.precioDesde || 0
+                    ) > 60
+            );
+        }
+
+
+        /* ORDEN */
+
+        if (orden === "recomendados") {
+
+            resultado.sort(
+                (a, b) =>
+                    Number(
+                        b.calificacion || 0
+                    ) -
+                    Number(
+                        a.calificacion || 0
+                    )
+            );
+        }
+
+        if (orden === "precio-menor") {
+
+            resultado.sort(
+                (a, b) =>
+                    Number(
+                        a.precioDesde || 0
+                    ) -
+                    Number(
+                        b.precioDesde || 0
+                    )
+            );
+        }
+
+        if (orden === "precio-mayor") {
+
+            resultado.sort(
+                (a, b) =>
+                    Number(
+                        b.precioDesde || 0
+                    ) -
+                    Number(
+                        a.precioDesde || 0
+                    )
+            );
+        }
+
+        return resultado;
+
+    }, [
+        hoteles,
+        zona,
+        precio,
+        orden
+    ]);
+
+
     return (
         <Layout>
 
-            <section className="hoteles-hero">
+            <main className="hoteles-page">
 
-                <div className="container">
+                {/* =================================================
+                    HERO
+                ================================================= */}
 
-                    <span>
-                        Hospedaje
-                    </span>
+                <section className="hotel-hero">
 
-                    <h1>
-                        Descansa y disfruta
-                        Esmeraldas.
-                    </h1>
+                    <div className="hotel-hero-overlay" />
 
-                    <p>
-                        Encuentra lugares para hospedarte
-                        cerca de los principales atractivos
-                        de la ciudad.
-                    </p>
+                    <div className="hotel-hero-content">
 
-                </div>
+                        <div className="hotel-hero-copy">
 
-            </section>
+                            <div className="hotel-eyebrow">
+                                Hospedaje en Esmeraldas
+                                <span />
+                            </div>
 
-            <section className="hoteles-section">
+                            <h1>
+                                Tu lugar ideal
+                                <strong>
+                                    en la costa
+                                </strong>
+                            </h1>
 
-                <div className="container">
+                            <p>
+                                Descubre los mejores hoteles en
+                                Esmeraldas. Relájate, disfruta del mar,
+                                la naturaleza y la calidez de nuestra
+                                gente. Aquí empieza tu próxima aventura.
+                            </p>
 
-                    <form
-                        className="hoteles-search"
-                        onSubmit={buscar}
-                    >
 
-                        <Search size={19} />
+                            {/* BENEFICIOS */}
 
-                        <input
-                            type="search"
-                            placeholder="Buscar hotel..."
-                            value={q}
-                            onChange={
-                                event =>
-                                    setQ(
-                                        event.target.value
-                                    )
-                            }
-                        />
+                            <div className="hotel-benefits">
 
-                        <button type="submit">
-                            Buscar
-                        </button>
+                                <div className="hotel-benefit">
 
-                    </form>
+                                    <span>
+                                        <BedDouble size={22} />
+                                    </span>
 
-                    <div className="hoteles-title">
+                                    <div>
+                                        <strong>
+                                            Comodidad
+                                        </strong>
 
-                        <span>
-                            {hoteles.length} resultados
-                        </span>
+                                        <small>
+                                            y descanso
+                                        </small>
+                                    </div>
 
-                        <h2>
-                            Lugares para hospedarte
-                        </h2>
+                                </div>
+
+
+                                <div className="hotel-benefit">
+
+                                    <span>
+                                        <MapPin size={22} />
+                                    </span>
+
+                                    <div>
+                                        <strong>
+                                            Ubicaciones
+                                        </strong>
+
+                                        <small>
+                                            estratégicas
+                                        </small>
+                                    </div>
+
+                                </div>
+
+
+                                <div className="hotel-benefit">
+
+                                    <span>
+                                        <Waves size={22} />
+                                    </span>
+
+                                    <div>
+                                        <strong>
+                                            Cerca del mar
+                                        </strong>
+
+                                        <small>
+                                            y naturaleza
+                                        </small>
+                                    </div>
+
+                                </div>
+
+
+                                <div className="hotel-benefit">
+
+                                    <span>
+                                        <Heart size={21} />
+                                    </span>
+
+                                    <div>
+                                        <strong>
+                                            Una experiencia
+                                        </strong>
+
+                                        <small>
+                                            inolvidable
+                                        </small>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    {loading && (
-                        <div className="hotel-status">
-                            Cargando hoteles...
-                        </div>
-                    )}
+                </section>
 
-                    {!loading && error && (
-                        <div className="hotel-status hotel-error">
-                            {error}
-                        </div>
-                    )}
 
-                    {!loading &&
-                        !error &&
-                        hoteles.length === 0 && (
+                {/* =================================================
+                    CONTENIDO
+                ================================================= */}
+
+                <section className="hoteles-content">
+
+                    <div className="hoteles-container">
+
+
+                        {/* =========================================
+                            BUSCADOR
+                        ========================================= */}
+
+                        <form
+                            className="hotel-search-panel"
+                            onSubmit={buscar}
+                        >
+
+                            <div className="hotel-search-field hotel-search-main">
+
+                                <Search size={20} />
+
+                                <input
+                                    type="search"
+                                    placeholder="Buscar hotel por nombre, ubicación o característica..."
+                                    value={q}
+                                    onChange={
+                                        event =>
+                                            setQ(
+                                                event.target.value
+                                            )
+                                    }
+                                />
+
+                            </div>
+
+
+                            <div className="hotel-select-field">
+
+                                <MapPin size={19} />
+
+                                <select
+                                    value={zona}
+                                    onChange={
+                                        event =>
+                                            setZona(
+                                                event.target.value
+                                            )
+                                    }
+                                >
+                                    <option value="todas">
+                                        Todas las zonas
+                                    </option>
+
+                                    <option value="las palmas">
+                                        Las Palmas
+                                    </option>
+
+                                    <option value="centro">
+                                        Centro
+                                    </option>
+
+                                    <option value="esmeraldas">
+                                        Esmeraldas
+                                    </option>
+                                </select>
+
+                                <ChevronDown size={17} />
+
+                            </div>
+
+
+                            <div className="hotel-select-field">
+
+                                <CalendarDays size={19} />
+
+                                <select
+                                    value={precio}
+                                    onChange={
+                                        event =>
+                                            setPrecio(
+                                                event.target.value
+                                            )
+                                    }
+                                >
+                                    <option value="todos">
+                                        Cualquier precio
+                                    </option>
+
+                                    <option value="economico">
+                                        Hasta $40
+                                    </option>
+
+                                    <option value="medio">
+                                        $41 - $60
+                                    </option>
+
+                                    <option value="premium">
+                                        Más de $60
+                                    </option>
+                                </select>
+
+                                <ChevronDown size={17} />
+
+                            </div>
+
+
+                            <button
+                                className="hotel-search-button"
+                                type="submit"
+                            >
+                                <Search size={19} />
+
+                                <span>
+                                    Buscar
+                                </span>
+                            </button>
+
+                        </form>
+
+
+                        {/* =========================================
+                            ENCABEZADO DE RESULTADOS
+                        ========================================= */}
+
+                        <div className="hotel-results-header">
+
+                            <div>
+
+                                <span className="hotel-results-count">
+                                    {hotelesFiltrados.length}
+                                    {" "}
+                                    {hotelesFiltrados.length === 1
+                                        ? "hotel encontrado"
+                                        : "hoteles encontrados"}
+                                </span>
+
+                                <h2>
+                                    Hoteles en Esmeraldas
+                                </h2>
+
+                                <p>
+                                    Comodidad, buena ubicación y
+                                    la mejor vista del Pacífico.
+                                </p>
+
+                            </div>
+
+
+                            <div className="hotel-sort">
+
+                                <span>
+                                    Ordenar por:
+                                </span>
+
+                                <div className="hotel-sort-select">
+
+                                    <select
+                                        value={orden}
+                                        onChange={
+                                            event =>
+                                                setOrden(
+                                                    event.target.value
+                                                )
+                                        }
+                                    >
+                                        <option value="recomendados">
+                                            Más recomendados
+                                        </option>
+
+                                        <option value="precio-menor">
+                                            Menor precio
+                                        </option>
+
+                                        <option value="precio-mayor">
+                                            Mayor precio
+                                        </option>
+                                    </select>
+
+                                    <ChevronDown size={16} />
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* =========================================
+                            ESTADOS
+                        ========================================= */}
+
+                        {loading && (
                             <div className="hotel-status">
 
-                                <Hotel size={40} />
+                                <div className="hotel-loader" />
 
-                                No se encontraron hoteles.
+                                <span>
+                                    Cargando hoteles...
+                                </span>
 
                             </div>
                         )}
 
-                    {!loading &&
-                        !error &&
-                        hoteles.length > 0 && (
-                            <div className="hoteles-grid">
 
-                                {hoteles.map(
-                                    (hotel, index) => {
+                        {!loading && error && (
+                            <div className="hotel-status hotel-error">
 
-                                        const imagen =
-                                            resolverImagen(
-                                                hotel.imagen,
-                                                imagenHotelPorIndice(
-                                                    index
-                                                )
-                                            );
+                                {error}
 
-                                        return (
-                                            <Link
-                                                to={`/hoteles/${hotel.id}`}
-                                                className="hotel-card"
-                                                key={hotel.id}
-                                            >
+                            </div>
+                        )}
 
-                                                <div className="hotel-image">
 
-                                                    <img
-                                                        src={imagen}
-                                                        alt={hotel.nombre}
-                                                    />
+                        {!loading &&
+                            !error &&
+                            hotelesFiltrados.length === 0 && (
 
-                                                    <span className="hotel-rating">
+                                <div className="hotel-status">
 
-                                                        <Star
-                                                            size={15}
-                                                            fill="currentColor"
+                                    <Hotel size={46} />
+
+                                    <strong>
+                                        No encontramos hoteles.
+                                    </strong>
+
+                                    <span>
+                                        Prueba utilizando otros filtros.
+                                    </span>
+
+                                </div>
+
+                            )}
+
+
+                        {/* =========================================
+                            GRID
+                        ========================================= */}
+
+                        {!loading &&
+                            !error &&
+                            hotelesFiltrados.length > 0 && (
+
+                                <div className="hoteles-grid">
+
+                                    {hotelesFiltrados.map(
+                                        (hotel, index) => {
+
+                                            const imagen =
+                                                resolverImagen(
+                                                    hotel.imagen,
+                                                    imagenHotelPorIndice(
+                                                        index
+                                                    )
+                                                );
+
+
+                                            const visual =
+                                                detallesVisuales[
+                                                    index %
+                                                    detallesVisuales.length
+                                                ];
+
+
+                                            const calificacion =
+                                                Number(
+                                                    hotel.calificacion || 0
+                                                );
+
+
+                                            return (
+
+                                                <article
+                                                    className="hotel-card"
+                                                    key={hotel.id}
+                                                >
+
+                                                    {/* IMAGEN */}
+
+                                                    <div className="hotel-card-image">
+
+                                                        <img
+                                                            src={imagen}
+                                                            alt={hotel.nombre}
                                                         />
 
-                                                        {
-                                                            Number(
-                                                                hotel.calificacion ||
-                                                                0
-                                                            ).toFixed(1)
-                                                        }
 
-                                                    </span>
+                                                        <span className="hotel-card-badge">
 
-                                                </div>
+                                                            {visual.etiqueta}
 
-                                                <div className="hotel-content">
+                                                        </span>
 
-                                                    <span className="hotel-label">
-                                                        Hospedaje
-                                                    </span>
 
-                                                    <h3>
-                                                        {hotel.nombre}
-                                                    </h3>
+                                                        <button
+                                                            type="button"
+                                                            className="hotel-favorite"
+                                                            aria-label="Agregar a favoritos"
+                                                        >
+                                                            <Heart size={20} />
+                                                        </button>
 
-                                                    <p>
-                                                        {
-                                                            hotel.descripcion ||
-                                                            "Hospedaje en Esmeraldas."
-                                                        }
-                                                    </p>
 
-                                                    <div className="hotel-location">
+                                                        {calificacion > 0 && (
 
-                                                        <MapPin
-                                                            size={15}
-                                                        />
+                                                            <span className="hotel-rating">
 
-                                                        {
-                                                            hotel.direccion ||
-                                                            "Esmeraldas"
-                                                        }
+                                                                <Star
+                                                                    size={16}
+                                                                    fill="currentColor"
+                                                                />
+
+                                                                {calificacion.toFixed(1)}
+
+                                                            </span>
+
+                                                        )}
 
                                                     </div>
 
-                                                    {hotel.precioDesde && (
-                                                        <strong className="hotel-price">
-                                                            Desde $
+
+                                                    {/* CONTENIDO */}
+
+                                                    <div className="hotel-card-content">
+
+                                                        <h3>
+                                                            {hotel.nombre}
+                                                        </h3>
+
+
+                                                        <div className="hotel-location">
+
+                                                            <MapPin size={16} />
+
+                                                            <span>
+                                                                {
+                                                                    hotel.direccion ||
+                                                                    "Esmeraldas"
+                                                                }
+                                                            </span>
+
+                                                        </div>
+
+
+                                                        <p className="hotel-description">
+
                                                             {
-                                                                hotel.precioDesde
+                                                                hotel.descripcion ||
+                                                                "Hospedaje en Esmeraldas con una excelente ubicación."
                                                             }
-                                                        </strong>
-                                                    )}
 
-                                                </div>
+                                                        </p>
 
-                                            </Link>
-                                        );
-                                    }
-                                )}
+
+                                                        {/* SERVICIOS */}
+
+                                                        <div className="hotel-services">
+
+                                                            {visual.servicios.map(
+                                                                servicio => {
+
+                                                                    const Icono =
+                                                                        servicio.icono;
+
+                                                                    return (
+                                                                        <span
+                                                                            key={servicio.texto}
+                                                                        >
+
+                                                                            <Icono size={15} />
+
+                                                                            {
+                                                                                servicio.texto
+                                                                            }
+
+                                                                        </span>
+                                                                    );
+                                                                }
+                                                            )}
+
+                                                        </div>
+
+
+                                                        <div className="hotel-card-footer">
+
+                                                            <div className="hotel-price">
+
+                                                                <span>
+                                                                    Desde
+                                                                </span>
+
+                                                                <strong>
+
+                                                                    $
+                                                                    {
+                                                                        hotel.precioDesde ||
+                                                                        "Consultar"
+                                                                    }
+
+                                                                </strong>
+
+                                                                {hotel.precioDesde && (
+                                                                    <small>
+                                                                        / noche
+                                                                    </small>
+                                                                )}
+
+                                                            </div>
+
+
+                                                            <Link
+                                                                to={`/hoteles/${hotel.id}`}
+                                                                className="hotel-detail-button"
+                                                            >
+                                                                Ver detalles
+
+                                                                <ArrowRight size={18} />
+                                                            </Link>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </article>
+
+                                            );
+                                        }
+                                    )}
+
+                                </div>
+
+                            )}
+
+
+                        {/* =========================================
+                            BANNER FINAL
+                        ========================================= */}
+
+                        <div className="hotel-bottom-banner">
+
+                            <div className="hotel-bottom-message">
+
+                                <span className="hotel-bottom-icon">
+                                    🌿
+                                </span>
+
+                                <strong>
+                                    “Hospédate en Esmeraldas y vive
+                                    la magia del Pacífico”
+                                </strong>
+
+                                <span className="hotel-bottom-line" />
 
                             </div>
-                        )}
 
-                </div>
 
-            </section>
+                            <Link
+                                to="/"
+                                className="hotel-bottom-button"
+                            >
+                                Descubre Esmeraldas
+
+                                <ArrowRight size={18} />
+                            </Link>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </main>
 
         </Layout>
     );

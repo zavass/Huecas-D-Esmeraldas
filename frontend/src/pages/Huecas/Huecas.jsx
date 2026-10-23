@@ -1,35 +1,152 @@
 import {
     useEffect,
+    useMemo,
     useState
 } from "react";
 
 import {
-    Link
-} from "react-router-dom";
-
-import {
-    MapPin,
     Search,
     SlidersHorizontal,
-    Star,
-    UtensilsCrossed
+    Grid2X2
 } from "lucide-react";
 
 import Layout from "../../components/Layout/Layout.jsx";
-
-import {
-    listarHuecas
-} from "../../services/huecaService.js";
-
-import {
-    listarCategorias
-} from "../../services/categoriaService.js";
-
-import {
-    obtenerImagenHueca
-} from "../../assets/images/imageMap.js";
+import HuecaCard from "../../components/Cards/HuecaCard.jsx";
 
 import "./Huecas.css";
+
+
+const API_URL =
+    "http://localhost:8080/api";
+
+
+/*
+============================================================
+CATEGORÍAS VISUALES DEL FRONTEND
+============================================================
+*/
+
+const categoriasVisuales = [
+
+    {
+        id: "TODAS",
+        nombre: "Todas",
+        icono: "▦",
+        palabras: []
+    },
+
+    {
+        id: "MARISCOS",
+        nombre: "Mariscos",
+        icono: "🦐",
+        palabras: [
+            "marisco",
+            "mariscos",
+            "camarón",
+            "camaron",
+            "camarones",
+            "langostino",
+            "langostinos",
+            "concha",
+            "conchas",
+            "pescado"
+        ]
+    },
+
+    {
+        id: "ENCOCADOS",
+        nombre: "Encocados",
+        icono: "🥘",
+        palabras: [
+            "encocado",
+            "encocao",
+            "encocados",
+            "encocaos"
+        ]
+    },
+
+    {
+        id: "BOLONES",
+        nombre: "Bolones",
+        icono: "🫓",
+        palabras: [
+            "bolón",
+            "bolon",
+            "bolones",
+            "verde"
+        ]
+    },
+
+    {
+        id: "PLATOS_TIPICOS",
+        nombre: "Platos típicos",
+        icono: "🍲",
+        palabras: [
+            "típico",
+            "tipico",
+            "típicos",
+            "tipicos",
+            "tradicional",
+            "tradicionales",
+            "comida típica",
+            "comida tipica",
+            "tigrillo",
+            "tapao",
+            "ensumacao"
+        ]
+    },
+
+    {
+        id: "PARRILLADAS",
+        nombre: "Parrilladas",
+        icono: "♨️",
+        palabras: [
+            "parrilla",
+            "parrillada",
+            "parrilladas",
+            "asado",
+            "asados",
+            "brasa"
+        ]
+    },
+
+    {
+        id: "CEVICHES",
+        nombre: "Ceviches",
+        icono: "🐟",
+        palabras: [
+            "ceviche",
+            "ceviches"
+        ]
+    },
+
+    {
+        id: "BEBIDAS",
+        nombre: "Bebidas",
+        icono: "🥤",
+        palabras: [
+            "bebida",
+            "bebidas",
+            "jugo",
+            "jugos",
+            "batido",
+            "batidos"
+        ]
+    },
+
+    {
+        id: "POSTRES",
+        nombre: "Postres",
+        icono: "🍰",
+        palabras: [
+            "postre",
+            "postres",
+            "dulce",
+            "dulces"
+        ]
+    }
+
+];
 
 
 function Huecas() {
@@ -37,14 +154,11 @@ function Huecas() {
     const [huecas, setHuecas] =
         useState([]);
 
-    const [categorias, setCategorias] =
-        useState([]);
-
-    const [q, setQ] =
+    const [busqueda, setBusqueda] =
         useState("");
 
-    const [categoria, setCategoria] =
-        useState("");
+    const [categoriaSeleccionada, setCategoriaSeleccionada] =
+        useState("TODAS");
 
     const [loading, setLoading] =
         useState(true);
@@ -53,80 +167,52 @@ function Huecas() {
         useState("");
 
 
-    // ===================================================
-    // CARGA INICIAL
-    // ===================================================
+    /*
+    ============================================================
+    CARGAR HUECAS
+    ============================================================
+    */
 
     useEffect(() => {
 
-        cargarCategorias();
         cargarHuecas();
 
     }, []);
 
-
-    // ===================================================
-    // CAMBIAR CATEGORÍA
-    // ===================================================
-
-    useEffect(() => {
-
-        cargarHuecas();
-
-    }, [categoria]);
-
-
-    // ===================================================
-    // CARGAR CATEGORÍAS
-    // ===================================================
-
-    async function cargarCategorias() {
-
-        try {
-
-            const data =
-                await listarCategorias();
-
-            setCategorias(
-                Array.isArray(data)
-                    ? data
-                    : []
-            );
-
-        } catch (err) {
-
-            console.error(
-                "Error cargando categorías:",
-                err
-            );
-
-            setCategorias([]);
-        }
-    }
-
-
-    // ===================================================
-    // CARGAR HUECAS
-    // ===================================================
 
     async function cargarHuecas() {
 
         try {
 
             setLoading(true);
+
             setError("");
 
-            const data =
-                await listarHuecas(
-                    q,
-                    categoria
+
+            const response =
+                await fetch(
+                    `${API_URL}/huecas`
                 );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "No fue posible cargar las huecas."
+                );
+            }
+
+
+            const data =
+                await response.json();
+
 
             setHuecas(
                 Array.isArray(data)
                     ? data
                     : []
             );
+
 
         } catch (err) {
 
@@ -135,127 +221,279 @@ function Huecas() {
                 err
             );
 
+
             setError(
                 err.message ||
-                "No se pudieron cargar las huecas."
+                "Ocurrió un error al cargar las huecas."
             );
 
         } finally {
 
             setLoading(false);
+
         }
+
     }
 
 
-    // ===================================================
-    // BUSCAR
-    // ===================================================
+    /*
+    ============================================================
+    NORMALIZAR TEXTO
+    ============================================================
+    */
 
-    function buscar(event) {
+    function normalizarTexto(texto = "") {
 
-        event.preventDefault();
-
-        cargarHuecas();
+        return String(texto)
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .toLowerCase()
+            .trim();
     }
 
 
-    // ===================================================
-    // RENDER
-    // ===================================================
+    /*
+    ============================================================
+    FILTRADO
+    ============================================================
+    */
+
+    const huecasFiltradas =
+        useMemo(() => {
+
+            let resultado =
+                [...huecas];
+
+
+            /*
+            --------------------------------------------
+            BUSCADOR GENERAL
+            --------------------------------------------
+            */
+
+            const textoBusqueda =
+                normalizarTexto(
+                    busqueda
+                );
+
+
+            if (textoBusqueda) {
+
+                resultado =
+                    resultado.filter(
+                        hueca => {
+
+                            const textoCompleto =
+                                normalizarTexto(
+                                    `
+                                    ${hueca.nombre || ""}
+                                    ${hueca.descripcion || ""}
+                                    ${hueca.direccion || ""}
+                                    ${hueca.categoriaNombre || ""}
+                                    ${hueca.etiqueta || ""}
+                                    `
+                                );
+
+
+                            return textoCompleto.includes(
+                                textoBusqueda
+                            );
+
+                        }
+                    );
+            }
+
+
+            /*
+            --------------------------------------------
+            FILTRO POR CATEGORÍA VISUAL
+            --------------------------------------------
+            */
+
+            if (
+                categoriaSeleccionada !==
+                "TODAS"
+            ) {
+
+                const categoria =
+                    categoriasVisuales.find(
+                        item =>
+                            item.id ===
+                            categoriaSeleccionada
+                    );
+
+
+                if (categoria) {
+
+                    resultado =
+                        resultado.filter(
+                            hueca => {
+
+                                const textoHueca =
+                                    normalizarTexto(
+                                        `
+                                        ${hueca.nombre || ""}
+                                        ${hueca.descripcion || ""}
+                                        ${hueca.categoriaNombre || ""}
+                                        ${hueca.etiqueta || ""}
+                                        `
+                                    );
+
+
+                                return categoria.palabras.some(
+                                    palabra =>
+
+                                        textoHueca.includes(
+                                            normalizarTexto(
+                                                palabra
+                                            )
+                                        )
+
+                                );
+
+                            }
+                        );
+                }
+            }
+
+
+            return resultado;
+
+        }, [
+            huecas,
+            busqueda,
+            categoriaSeleccionada
+        ]);
+
 
     return (
+
         <Layout>
 
-            <section className="huecas-hero">
-
-                <div className="container">
-
-                    <span className="huecas-eyebrow">
-                        Gastronomía esmeraldeña
-                    </span>
-
-                    <h1>
-                        Descubre las mejores
-                        huecas de Esmeraldas.
-                    </h1>
-
-                    <p>
-                        Encuentra sabores tradicionales,
-                        mariscos, bolones, encocados y
-                        experiencias gastronómicas
-                        auténticas de nuestra provincia.
-                    </p>
-
-                </div>
-
-            </section>
+            <main className="huecas-page">
 
 
-            <section className="huecas-section">
+                {/* =================================================
+                    HERO
+                ================================================= */}
 
-                <div className="container">
+                <section className="huecas-hero">
 
-                    {/* ============================= */}
-                    {/* BUSCADOR */}
-                    {/* ============================= */}
+                    <div className="huecas-hero-overlay" />
 
-                    <form
-                        className="huecas-toolbar"
-                        onSubmit={buscar}
-                    >
 
-                        <div className="huecas-search">
+                    <div className="container huecas-hero-content">
 
-                            <Search size={18} />
+                        <div className="huecas-hero-copy">
+
+                            <span className="huecas-eyebrow">
+
+                                Gastronomía Esmeraldeña
+
+                            </span>
+
+
+                            <h1>
+
+                                Descubre las mejores
+
+                                <span>
+                                    huecas de Esmeraldas
+                                </span>
+
+                            </h1>
+
+
+                            <p>
+
+                                Sabores auténticos,
+                                recetas tradicionales y
+                                la calidez de nuestra gente.
+
+                                <br />
+
+                                Explora, califica y vive
+                                la verdadera gastronomía
+                                esmeraldeña.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                {/* =================================================
+                    BUSCADOR
+                ================================================= */}
+
+                <section className="container huecas-search-section">
+
+                    <div className="huecas-search-panel">
+
+
+                        <div className="huecas-search-input">
+
+                            <Search size={20} />
 
                             <input
-                                type="search"
-                                placeholder="Buscar hueca..."
-                                value={q}
+                                type="text"
+                                value={busqueda}
                                 onChange={
                                     event =>
-                                        setQ(
+                                        setBusqueda(
                                             event.target.value
                                         )
                                 }
+                                placeholder="Buscar por nombre de hueca, plato o ubicación..."
                             />
 
                         </div>
 
 
-                        <div className="huecas-filter">
+                        <div className="huecas-select-wrapper">
 
                             <SlidersHorizontal
-                                size={18}
+                                size={19}
                             />
 
+
                             <select
-                                value={categoria}
+                                value={
+                                    categoriaSeleccionada
+                                }
                                 onChange={
                                     event =>
-                                        setCategoria(
+                                        setCategoriaSeleccionada(
                                             event.target.value
                                         )
                                 }
                             >
 
-                                <option value="">
-                                    Todas las categorías
-                                </option>
-
                                 {
-                                    categorias.map(
-                                        item => (
+                                    categoriasVisuales.map(
+                                        categoria => (
+
                                             <option
-                                                key={item.id}
+                                                key={
+                                                    categoria.id
+                                                }
                                                 value={
-                                                    item.nombre
+                                                    categoria.id
                                                 }
                                             >
+
                                                 {
-                                                    item.nombre
+                                                    categoria.nombre
                                                 }
+
                                             </option>
+
                                         )
                                     )
                                 }
@@ -266,92 +504,159 @@ function Huecas() {
 
 
                         <button
-                            type="submit"
+                            type="button"
                             className="huecas-search-button"
                         >
+
+                            <Search size={19} />
+
                             Buscar
+
                         </button>
 
-                    </form>
+                    </div>
+
+                </section>
 
 
-                    {/* ============================= */}
-                    {/* TÍTULO */}
-                    {/* ============================= */}
+                {/* =================================================
+                    CATEGORÍAS VISUALES
+                ================================================= */}
 
-                    <div className="huecas-heading-row">
+                <section className="container huecas-categories">
+
+                    {
+                        categoriasVisuales.map(
+                            categoria => (
+
+                                <button
+                                    key={categoria.id}
+                                    type="button"
+                                    className={
+                                        categoriaSeleccionada
+                                        ===
+                                        categoria.id
+                                            ? "category-pill active"
+                                            : "category-pill"
+                                    }
+                                    onClick={() =>
+                                        setCategoriaSeleccionada(
+                                            categoria.id
+                                        )
+                                    }
+                                >
+
+                                    <span className="category-icon">
+
+                                        {
+                                            categoria.id ===
+                                            "TODAS"
+                                                ? (
+                                                    <Grid2X2
+                                                        size={23}
+                                                    />
+                                                )
+                                                : (
+                                                    <span className="category-emoji">
+
+                                                        {
+                                                            categoria.icono
+                                                        }
+
+                                                    </span>
+                                                )
+                                        }
+
+                                    </span>
+
+
+                                    <strong>
+
+                                        {
+                                            categoria.nombre
+                                        }
+
+                                    </strong>
+
+                                </button>
+
+                            )
+                        )
+                    }
+
+                </section>
+
+
+                {/* =================================================
+                    RESULTADOS
+                ================================================= */}
+
+                <section className="container huecas-results">
+
+
+                    <div className="huecas-results-header">
 
                         <div>
 
-                            <span>
-                                {huecas.length}
-                                {" "}
+                            <span className="huecas-count">
+
                                 {
-                                    huecas.length === 1
-                                        ? "resultado"
-                                        : "resultados"
+                                    huecasFiltradas.length
                                 }
+
+                                {
+                                    huecasFiltradas.length === 1
+                                        ? " HUECA ENCONTRADA"
+                                        : " HUECAS ENCONTRADAS"
+                                }
+
                             </span>
 
+
                             <h2>
-                                Lugares para disfrutar
+                                Huecas recomendadas
                             </h2>
+
+                        </div>
+
+
+                        <div className="huecas-order">
+
+                            <span>
+                                Ordenar por:
+                            </span>
+
+
+                            <select>
+
+                                <option>
+                                    Más populares
+                                </option>
+
+                                <option>
+                                    Mejor valoradas
+                                </option>
+
+                                <option>
+                                    Nombre
+                                </option>
+
+                            </select>
 
                         </div>
 
                     </div>
 
 
-                    {/* ============================= */}
-                    {/* LOADING */}
-                    {/* ============================= */}
-
-                    {loading && (
-
-                        <div className="huecas-status">
-                            Cargando huecas...
-                        </div>
-
-                    )}
-
-
-                    {/* ============================= */}
-                    {/* ERROR */}
-                    {/* ============================= */}
-
-                    {!loading && error && (
-
-                        <div className="huecas-status huecas-error">
-                            {error}
-                        </div>
-
-                    )}
-
-
-                    {/* ============================= */}
-                    {/* SIN RESULTADOS */}
-                    {/* ============================= */}
-
                     {
-                        !loading &&
-                        !error &&
-                        huecas.length === 0 &&
-                        (
+                        loading && (
 
-                            <div className="huecas-empty">
+                            <div className="huecas-state">
 
-                                <UtensilsCrossed
-                                    size={42}
-                                />
-
-                                <h3>
-                                    No encontramos resultados
-                                </h3>
+                                <span className="huecas-loader" />
 
                                 <p>
-                                    Prueba con otro nombre
-                                    o selecciona una categoría
-                                    diferente.
+                                    Cargando huecas...
                                 </p>
 
                             </div>
@@ -360,149 +665,84 @@ function Huecas() {
                     }
 
 
-                    {/* ============================= */}
-                    {/* CARDS */}
-                    {/* ============================= */}
+                    {
+                        !loading &&
+                        error && (
+
+                            <div className="huecas-state huecas-error">
+
+                                <p>
+                                    {error}
+                                </p>
+
+
+                                <button
+                                    onClick={
+                                        cargarHuecas
+                                    }
+                                >
+
+                                    Reintentar
+
+                                </button>
+
+                            </div>
+
+                        )
+                    }
+
 
                     {
                         !loading &&
                         !error &&
-                        huecas.length > 0 &&
-                        (
+                        huecasFiltradas.length === 0 && (
+
+                            <div className="huecas-state">
+
+                                <Search size={36} />
+
+                                <h3>
+                                    No encontramos huecas
+                                </h3>
+
+                                <p>
+                                    Prueba otra categoría
+                                    o una búsqueda diferente.
+                                </p>
+
+                            </div>
+
+                        )
+                    }
+
+
+                    {
+                        !loading &&
+                        !error &&
+                        huecasFiltradas.length > 0 && (
 
                             <div className="huecas-grid">
 
                                 {
-                                    huecas.map(
+                                    huecasFiltradas.map(
                                         (
                                             hueca,
                                             index
-                                        ) => {
+                                        ) => (
 
-                                            const imagen =
-                                                obtenerImagenHueca(
-                                                    hueca,
+                                            <HuecaCard
+                                                key={
+                                                    hueca.id
+                                                }
+                                                hueca={
+                                                    hueca
+                                                }
+                                                index={
                                                     index
-                                                );
+                                                }
+                                            />
 
-                                            return (
-
-                                                <Link
-                                                    to={
-                                                        `/huecas/${hueca.id}`
-                                                    }
-                                                    className="hueca-card"
-                                                    key={
-                                                        hueca.id
-                                                    }
-                                                >
-
-                                                    {/* IMAGEN */}
-
-                                                    <div className="hueca-image-wrap">
-
-                                                        <img
-                                                            src={
-                                                                imagen
-                                                            }
-                                                            alt={
-                                                                hueca.nombre
-                                                            }
-                                                        />
-
-
-                                                        {
-                                                            hueca.etiqueta &&
-                                                            (
-
-                                                                <span className="hueca-tag">
-
-                                                                    {
-                                                                        hueca.etiqueta
-                                                                    }
-
-                                                                </span>
-
-                                                            )
-                                                        }
-
-
-                                                        <div className="hueca-rating">
-
-                                                            <Star
-                                                                size={15}
-                                                                fill="currentColor"
-                                                            />
-
-                                                            {
-                                                                Number(
-                                                                    hueca.calificacion ||
-                                                                    0
-                                                                ).toFixed(
-                                                                    1
-                                                                )
-                                                            }
-
-                                                        </div>
-
-                                                    </div>
-
-
-                                                    {/* CONTENIDO */}
-
-                                                    <div className="hueca-content">
-
-                                                        <span className="hueca-category">
-
-                                                            {
-                                                                hueca.categoriaNombre ||
-                                                                hueca.categoria?.nombre ||
-                                                                "Gastronomía"
-                                                            }
-
-                                                        </span>
-
-
-                                                        <h3>
-                                                            {
-                                                                hueca.nombre
-                                                            }
-                                                        </h3>
-
-
-                                                        <p>
-
-                                                            {
-                                                                hueca.descripcion ||
-                                                                "Sabores auténticos de Esmeraldas."
-                                                            }
-
-                                                        </p>
-
-
-                                                        <div className="hueca-address">
-
-                                                            <MapPin
-                                                                size={15}
-                                                            />
-
-                                                            <span>
-
-                                                                {
-                                                                    hueca.direccion ||
-                                                                    "Esmeraldas"
-                                                                }
-
-                                                            </span>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </Link>
-
-                                            );
-                                        }
+                                        )
                                     )
                                 }
 
@@ -511,11 +751,12 @@ function Huecas() {
                         )
                     }
 
-                </div>
+                </section>
 
-            </section>
+            </main>
 
         </Layout>
+
     );
 }
 

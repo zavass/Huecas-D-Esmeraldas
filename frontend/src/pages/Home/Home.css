@@ -1,564 +1,698 @@
-.hero {
-    position: relative;
-    overflow: hidden;
+/* =========================================================
+   LAS HUECAS DE ESMERALDAS
+   HOME LIMPIO
+   Fondo panorámico + isla flotante 3D
+========================================================= */
 
-    min-height: 680px;
 
-    display: flex;
-    align-items: center;
+/* =========================================================
+   BASE
+========================================================= */
 
-    background:
-        linear-gradient(
-            135deg,
-            #10231d 0%,
-            #123e30 58%,
-            #075c43 100%
-        );
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
 
-    color: white;
+    width: 100%;
+    min-height: 100%;
 }
 
-.hero::after {
-    content: "";
 
+/* =========================================================
+   FONDO DEL HOME
+========================================================= */
+
+body.home-page-background {
+    min-height: 100vh;
+
+    background:
+        url("/images/logo/fondo-esmeraldas.png")
+        center center / cover
+        no-repeat fixed;
+
+    background-color: #087b98;
+}
+
+body.home-page-background #root {
+    min-height: 100vh;
+
+    background: transparent;
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+.home-premium {
+    position: relative;
+
+    width: 100%;
+    min-height: calc(100vh - 20px);
+
+    overflow: hidden;
+
+    padding: 50px 0 45px;
+
+    background: transparent;
+
+    isolation: isolate;
+}
+
+
+/* =========================================================
+   CAPA PARA LEER EL TEXTO
+========================================================= */
+
+.home-background-overlay {
     position: absolute;
 
     inset: 0;
 
-    opacity: 0.06;
+    z-index: -5;
 
-    background-image:
-        radial-gradient(
-            circle at 1px 1px,
-            white 1px,
-            transparent 0
-        );
+    pointer-events: none;
 
-    background-size: 30px 30px;
-}
-
-.hero-glow {
-    position: absolute;
-
-    border-radius: 50%;
-
-    filter: blur(20px);
-}
-
-.hero-glow-one {
-    width: 500px;
-    height: 500px;
-
-    right: -150px;
-    top: -180px;
-
-    background:
-        rgba(23, 204, 145, 0.16);
-}
-
-.hero-glow-two {
-    width: 340px;
-    height: 340px;
-
-    left: -120px;
-    bottom: -160px;
-
-    background:
-        rgba(242, 180, 65, 0.11);
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-
-    display: grid;
-
-    grid-template-columns:
-        1.08fr 0.92fr;
-
-    gap: 70px;
-
-    align-items: center;
-
-    padding-top: 65px;
-    padding-bottom: 65px;
-}
-
-.hero-badge {
-    width: fit-content;
-
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    padding: 8px 13px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.13);
-
-    border-radius: 999px;
-
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    color: #d6f9ec;
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.hero-copy h1 {
-    max-width: 670px;
-
-    margin-top: 22px;
-
-    font-size:
-        clamp(
-            46px,
-            6.8vw,
-            78px
-        );
-
-    line-height: 0.99;
-
-    letter-spacing: -3.5px;
-}
-
-.hero-copy h1 span {
-    color: #49d9a7;
-}
-
-.hero-copy > p {
-    max-width: 610px;
-
-    margin-top: 24px;
-
-    color: #bbd1c9;
-
-    font-size: 17px;
-    line-height: 1.8;
-}
-
-.hero-buttons {
-    display: flex;
-
-    gap: 13px;
-
-    margin-top: 32px;
-}
-
-.hero-main-btn {
     background:
         linear-gradient(
-            135deg,
-            #0bb477,
-            #057a55
+            90deg,
+            rgba(248, 252, 250, 0.78) 0%,
+            rgba(248, 252, 250, 0.63) 18%,
+            rgba(246, 252, 250, 0.38) 31%,
+            rgba(243, 251, 249, 0.14) 43%,
+            rgba(236, 249, 248, 0.03) 55%,
+            transparent 67%
         );
 }
 
-.hero-stats {
-    display: flex;
 
-    gap: 40px;
+/* =========================================================
+   LUCES DECORATIVAS
+========================================================= */
 
-    margin-top: 43px;
-}
+.home-light {
+    position: absolute;
 
-.hero-stats div {
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-}
-
-.hero-stats strong {
-    font-size: 22px;
-}
-
-.hero-stats span {
-    display: flex;
-    align-items: center;
-
-    gap: 4px;
-
-    color: #91aaa1;
-
-    font-size: 12px;
-}
-
-.hero-visual {
-    position: relative;
-
-    display: flex;
-
-    justify-content: center;
-}
-
-.hero-main-card {
-    width: min(
-        100%,
-        450px
-    );
-
-    padding: 12px;
-
-    border-radius: 30px;
-
-    background:
-        rgba(255, 255, 255, 0.1);
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.15);
-
-    backdrop-filter: blur(20px);
-
-    box-shadow: var(--shadow-lg);
-
-    transform: rotate(2deg);
-}
-
-.hero-image-placeholder {
-    height: 340px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 22px;
-
-    background:
-        radial-gradient(
-            circle at top right,
-            #f1b747 0%,
-            #de8428 25%,
-            #286c52 72%,
-            #15352b 100%
-        );
-}
-
-.hero-food-symbol {
-    width: 150px;
-    height: 150px;
-
-    display: grid;
-    place-items: center;
+    z-index: -4;
 
     border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(90px);
+}
+
+.home-light-left {
+    width: 480px;
+    height: 480px;
+
+    left: -260px;
+    top: 90px;
 
     background:
         rgba(255, 255, 255, 0.16);
-
-    color: white;
-
-    backdrop-filter: blur(10px);
 }
 
-.hero-card-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.home-light-center {
+    width: 520px;
+    height: 420px;
 
-    gap: 20px;
-
-    padding: 18px 10px 8px;
-}
-
-.hero-card-label {
-    color: #54e5b3;
-
-    font-size: 10px;
-    font-weight: 850;
-
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.hero-card-info h3 {
-    margin-top: 5px;
-
-    font-size: 20px;
-}
-
-.hero-card-info p {
-    margin-top: 4px;
-
-    color: #a9beb7;
-
-    font-size: 12px;
-}
-
-.hero-rating {
-    display: flex;
-    align-items: center;
-
-    gap: 5px;
-
-    padding: 9px 12px;
-
-    border-radius: 12px;
+    left: 34%;
+    top: 8%;
 
     background:
-        rgba(242, 180, 65, 0.14);
-
-    color: #ffc95d;
-
-    font-size: 13px;
-    font-weight: 800;
+        rgba(91, 228, 217, 0.04);
 }
 
-.floating-card {
-    position: absolute;
 
-    padding: 13px 15px;
+/* =========================================================
+   GRID PRINCIPAL
+========================================================= */
 
-    display: flex;
-    align-items: center;
+.home-main-grid {
+    position: relative;
 
-    gap: 11px;
+    z-index: 20;
 
-    border-radius: 15px;
+    min-height: calc(100vh - 150px);
 
-    background: white;
-    color: var(--dark);
-
-    box-shadow: var(--shadow-md);
-}
-
-.floating-search {
-    bottom: 20px;
-    left: -30px;
-}
-
-.floating-search > svg {
-    color: var(--primary);
-}
-
-.floating-search strong {
-    display: block;
-
-    font-size: 12px;
-}
-
-.floating-search span {
-    display: block;
-
-    margin-top: 2px;
-
-    color: var(--text-soft);
-
-    font-size: 9px;
-}
-
-.discovery {
-    background: var(--background);
-}
-
-.discovery-grid {
     display: grid;
 
     grid-template-columns:
-        repeat(4, 1fr);
+        0.72fr
+        1.28fr;
 
-    gap: 19px;
+    align-items: center;
+
+    gap: 25px;
 }
 
-.discovery-card {
+
+/* =========================================================
+   BLOQUE DE TEXTO
+========================================================= */
+
+.home-copy {
     position: relative;
 
-    min-height: 245px;
+    z-index: 100;
 
-    padding: 28px;
+    max-width: 620px;
 
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        var(--radius-md);
-
-    background: white;
-
-    transition:
-        transform var(--transition),
-        box-shadow var(--transition),
-        border var(--transition);
+    transform:
+        translateX(-45px)
+        translateY(-15px);
 }
 
-.discovery-card:hover {
-    transform: translateY(-7px);
 
-    border-color: #bddfd3;
+/* =========================================================
+   ETIQUETA SUPERIOR
+========================================================= */
 
-    box-shadow: var(--shadow-md);
-}
-
-.discovery-icon {
-    width: 54px;
-    height: 54px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 16px;
-
-    background:
-        var(--primary-light);
-
-    color: var(--primary);
-}
-
-.discovery-card h3 {
-    margin-top: 25px;
-
-    font-size: 18px;
-}
-
-.discovery-card p {
-    margin-top: 10px;
-
-    color: var(--text-soft);
-
-    font-size: 13px;
-    line-height: 1.65;
-}
-
-.discovery-arrow {
-    position: absolute;
-
-    right: 24px;
-    bottom: 24px;
-
-    width: 37px;
-    height: 37px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 50%;
-
-    background: var(--background);
-
-    color: var(--dark);
-}
-
-.discovery-card:hover
-.discovery-arrow {
-    background: var(--primary);
-
-    color: white;
-}
-
-.cta-section {
-    padding: 20px 0 90px;
-}
-
-.cta-card {
-    padding: 60px;
-
+.home-eyebrow {
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
-    gap: 40px;
+    gap: 10px;
 
-    border-radius: 32px;
+    margin-bottom: 20px;
 
-    background:
-        linear-gradient(
-            120deg,
-            #057a55,
-            #075d45 55%,
-            #12382d
-        );
+    color: #087454;
 
-    color: white;
+    font-size: 11px;
+    font-weight: 900;
 
-    box-shadow: var(--shadow-md);
+    text-transform: uppercase;
+
+    letter-spacing: 2.8px;
 }
 
-.cta-eyebrow {
-    color: #8df0cc;
-}
 
-.cta-card h2 {
-    max-width: 700px;
+/* =========================================================
+   TÍTULO
+========================================================= */
+
+.home-copy h1 {
+    margin: 0;
+
+    color: #04392c;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
     font-size:
         clamp(
-            30px,
-            5vw,
-            48px
+            66px,
+            6vw,
+            100px
         );
 
-    line-height: 1.08;
+    line-height: 0.9;
 
-    letter-spacing: -1.6px;
+    letter-spacing: -4.5px;
+
+    text-shadow:
+        0 4px 25px
+        rgba(255, 255, 255, 0.34);
 }
 
-.cta-card p {
-    margin-top: 13px;
+.home-copy h1 span {
+    display: block;
 
-    color: #bee3d5;
+    margin-top: 18px;
+
+    color: #07885f;
 }
 
-@media (max-width: 950px) {
-    .hero-content {
-        grid-template-columns: 1fr;
+
+/* =========================================================
+   LÍNEA VERDE
+========================================================= */
+
+.home-title-line {
+    width: 88%;
+    height: 6px;
+
+    margin:
+        30px 0
+        18px;
+
+    border-radius: 999px;
+
+    background: #07875f;
+
+    transform:
+        rotate(-0.5deg);
+}
+
+
+/* =========================================================
+   SUBTÍTULO
+========================================================= */
+
+.home-copy h2 {
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    color: #123e33;
+
+    font-size:
+        clamp(
+            29px,
+            2.5vw,
+            42px
+        );
+
+    line-height: 1.12;
+
+    letter-spacing: -1.2px;
+}
+
+.home-copy h2 svg {
+    flex-shrink: 0;
+
+    color: #06a5ad;
+}
+
+
+/* =========================================================
+   ESCENA DE LA ISLA
+========================================================= */
+
+.island-scene-3d {
+    position: relative;
+
+    z-index: 30;
+
+    min-height: 640px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    perspective: 1500px;
+
+    transform-style: preserve-3d;
+
+    translate: 45px 0;
+}
+
+
+/* =========================================================
+   BRILLO DETRÁS DE LA ISLA
+========================================================= */
+
+.island-backlight {
+    position: absolute;
+
+    z-index: 0;
+
+    width: 650px;
+    height: 520px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(72, 225, 211, 0.16),
+            rgba(38, 182, 188, 0.05) 52%,
+            transparent 74%
+        );
+
+    filter: blur(18px);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   SOMBRA DE LA ISLA
+========================================================= */
+
+.island-shadow {
+    position: absolute;
+
+    z-index: 1;
+
+    left: 50%;
+    bottom: 28px;
+
+    width: 420px;
+    height: 68px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 49, 60, 0.27);
+
+    filter: blur(37px);
+
+    opacity: 0.66;
+
+    animation:
+        islandShadowMove
+        6s ease-in-out
+        infinite;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE PERSPECTIVA 3D
+========================================================= */
+
+.island-perspective {
+    position: relative;
+
+    z-index: 20;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transform-style: preserve-3d;
+
+    transition:
+        transform 0.14s ease-out;
+
+    will-change: transform;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE FLOTACIÓN
+========================================================= */
+
+.island-floating-animation {
+    position: relative;
+
+    z-index: 20;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transform-style: preserve-3d;
+
+    animation:
+        islandFloat
+        6s ease-in-out
+        infinite;
+}
+
+
+/* =========================================================
+   IMAGEN PNG
+========================================================= */
+
+.island-main-image {
+    position: relative;
+
+    z-index: 20;
+
+    width: 760px;
+    max-width: none;
+
+    display: block;
+
+    object-fit: contain;
+
+    user-select: none;
+    pointer-events: none;
+
+    transform:
+        translateZ(55px);
+
+    filter:
+        drop-shadow(
+            0 36px 30px
+            rgba(0, 44, 52, 0.30)
+        )
+        drop-shadow(
+            0 8px 15px
+            rgba(0, 78, 66, 0.12)
+        );
+}
+
+
+/* =========================================================
+   ANIMACIÓN DE FLOTACIÓN
+========================================================= */
+
+@keyframes islandFloat {
+
+    0%,
+    100% {
+        transform:
+            translateY(5px)
+            rotateZ(-0.25deg);
     }
 
-    .hero-visual {
-        margin-top: 15px;
+    50% {
+        transform:
+            translateY(-17px)
+            rotateZ(0.25deg);
+    }
+}
+
+
+/* =========================================================
+   ANIMACIÓN DE LA SOMBRA
+========================================================= */
+
+@keyframes islandShadowMove {
+
+    0%,
+    100% {
+        transform:
+            translateX(-50%)
+            scale(1);
+
+        opacity: 0.66;
     }
 
-    .discovery-grid {
+    50% {
+        transform:
+            translateX(-50%)
+            scale(0.86);
+
+        opacity: 0.45;
+    }
+}
+
+
+/* =========================================================
+   PANTALLAS MEDIANAS
+========================================================= */
+
+@media (max-width: 1400px) {
+
+    .home-copy {
+        transform:
+            translateX(-20px)
+            translateY(-10px);
+    }
+
+    .island-scene-3d {
+        translate: 20px 0;
+    }
+
+    .island-main-image {
+        width: 720px;
+    }
+}
+
+
+/* =========================================================
+   TABLET GRANDE
+========================================================= */
+
+@media (max-width: 1250px) {
+
+    .home-main-grid {
         grid-template-columns:
-            repeat(2, 1fr);
+            0.8fr
+            1.2fr;
+    }
+
+    .home-copy h1 {
+        font-size: 74px;
+    }
+
+    .island-main-image {
+        width: 680px;
+    }
+
+    .island-scene-3d {
+        translate: 10px 0;
     }
 }
 
-@media (max-width: 620px) {
-    .hero-copy h1 {
-        font-size: 48px;
 
-        letter-spacing: -2px;
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    body.home-page-background {
+        background-position:
+            62% center;
     }
 
-    .hero-buttons {
-        flex-direction: column;
-    }
+    .home-main-grid {
+        grid-template-columns: 1fr;
 
-    .hero-buttons .btn {
-        width: 100%;
-    }
+        min-height: auto;
 
-    .hero-stats {
+        padding-top: 25px;
+
         gap: 20px;
-
-        flex-wrap: wrap;
     }
 
-    .hero-main-card {
+    .home-copy {
+        max-width: 720px;
+
         transform: none;
     }
 
-    .hero-image-placeholder {
-        height: 280px;
+    .island-scene-3d {
+        min-height: 560px;
+
+        margin-top: -25px;
+
+        translate: 0 0;
     }
 
-    .floating-search {
-        display: none;
+    .island-main-image {
+        width: 650px;
+    }
+}
+
+
+/* =========================================================
+   TABLET PEQUEÑA
+========================================================= */
+
+@media (max-width: 760px) {
+
+    body.home-page-background {
+        background-position:
+            70% center;
     }
 
-    .discovery-grid {
-        grid-template-columns: 1fr;
+    .home-premium {
+        padding-top: 40px;
     }
 
-    .cta-card {
-        padding: 35px 25px;
+    .home-background-overlay {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(249, 252, 250, 0.90) 0%,
+                rgba(247, 252, 250, 0.72) 33%,
+                rgba(238, 250, 248, 0.34) 56%,
+                transparent 75%
+            );
+    }
 
-        flex-direction: column;
-        align-items: flex-start;
+    .home-copy h1 {
+        font-size: 56px;
+
+        line-height: 0.9;
+
+        letter-spacing: -3px;
+    }
+
+    .home-copy h1 span {
+        margin-top: 10px;
+    }
+
+    .home-title-line {
+        margin:
+            22px 0
+            16px;
+    }
+
+    .home-copy h2 {
+        font-size: 25px;
+    }
+
+    .island-scene-3d {
+        min-height: 500px;
+
+        margin:
+            -35px
+            -100px
+            -30px;
+
+        transform:
+            scale(0.72);
+
+        translate: 0 0;
+    }
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .home-copy h1 {
+        font-size: 45px;
+    }
+
+    .home-copy h2 {
+        font-size: 22px;
+    }
+
+    .home-title-line {
+        width: 100%;
+    }
+
+    .island-scene-3d {
+        min-height: 420px;
+
+        margin:
+            -70px
+            -175px
+            -50px;
+
+        transform:
+            scale(0.55);
+    }
+}
+
+
+/* =========================================================
+   ACCESIBILIDAD
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .island-floating-animation,
+    .island-shadow {
+        animation: none;
+    }
+
+    .island-perspective {
+        transition: none;
     }
 }
