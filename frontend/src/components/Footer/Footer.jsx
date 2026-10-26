@@ -1,65 +1,103 @@
+
 import {
-    Facebook,
-    Instagram,
-    MapPin,
-    UtensilsCrossed
+  Facebook,
+  Instagram,
+  MapPin,
+  UtensilsCrossed
 } from "lucide-react";
 
 import "./Footer.css";
 
+// ==========================================
+// REDES SOCIALES
+// ==========================================
+
+const INSTAGRAM_URL =
+  "https://www.instagram.com/alcaldiadeesmeraldas?exln=MTBmMHc5ZW54NGxxZA==";
+
+const FACEBOOK_URL =
+  "https://www.facebook.com/share/1E18jK7pLq/";
+
+// ==========================================
+// COMPONENTE FOOTER
+// ==========================================
+
 function Footer() {
-    return (
-        <footer className="footer">
+  return (
+    <footer className="footer">
 
-            <div className="container footer-content">
+      <div className="container footer-content">
 
-                <div className="footer-brand">
+        {/* LOGOTIPO Y DESCRIPCIÓN */}
 
-                    <div className="footer-logo">
-                        <UtensilsCrossed size={24} />
-                    </div>
+        <div className="footer-brand">
 
-                    <div>
-                        <h3>
-                            Las Huecas de Esmeraldas
-                        </h3>
+          <div className="footer-logo">
+            <UtensilsCrossed size={24} />
+          </div>
 
-                        <p>
-                            Descubre sabores, lugares y experiencias
-                            de nuestra tierra verde.
-                        </p>
-                    </div>
+          <div>
+            <h3>Las Huecas de Esmeraldas</h3>
 
-                </div>
+            <p>
+              Descubre sabores, lugares y experiencias
+              de nuestra tierra verde.
+            </p>
+          </div>
 
-                <div className="footer-location">
-                    <MapPin size={18} />
+        </div>
 
-                    <span>
-                        Esmeraldas, Ecuador
-                    </span>
-                </div>
+        {/* UBICACIÓN */}
 
-                <div className="footer-social">
+        <div className="footer-location">
+          <MapPin size={18} />
 
-                    <button type="button">
-                        <Instagram size={19} />
-                    </button>
+          <span>
+            Esmeraldas, Ecuador
+          </span>
+        </div>
 
-                    <button type="button">
-                        <Facebook size={19} />
-                    </button>
+        {/* REDES SOCIALES */}
 
-                </div>
+        <div className="footer-social">
 
-            </div>
+          {/* INSTAGRAM */}
 
-            <div className="footer-bottom">
-                © 2026 Las Huecas de Esmeraldas
-            </div>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram de la Alcaldía de Esmeraldas"
+            title="Visitar Instagram"
+          >
+            <Instagram size={19} />
+          </a>
 
-        </footer>
-    );
+          {/* FACEBOOK */}
+
+          <a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visitar Facebook"
+            title="Visitar Facebook"
+          >
+            <Facebook size={19} />
+          </a>
+
+        </div>
+
+      </div>
+
+      {/* DERECHOS RESERVADOS */}
+
+      <div className="footer-bottom">
+        © 2026 Las Huecas de Esmeraldas.
+        Todos los derechos reservados.
+      </div>
+
+    </footer>
+  );
 }
 
 export default Footer;

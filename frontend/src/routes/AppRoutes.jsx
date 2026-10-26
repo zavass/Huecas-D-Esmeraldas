@@ -1,92 +1,69 @@
+
 import {
-    Navigate,
-    Route,
-    Routes
+  Navigate,
+  Route,
+  Routes
 } from "react-router-dom";
 
-import Home
-    from "../pages/public/Home.jsx";
+// PAGINAS PRINCIPALES
+import Home from "../pages/Home/Home.jsx";
 
-import Huecas
-    from "../pages/public/Huecas.jsx";
+import Huecas from "../pages/Huecas/Huecas.jsx";
 
-import HuecaDetalle
-    from "../pages/public/HuecaDetalle.jsx";
+import HuecaDetalle from "../pages/HuecaDetalle/HuecaDetalle.jsx";
 
-import Hoteles
-    from "../pages/public/Hoteles.jsx";
+import Hoteles from "../pages/Hoteles/Hoteles.jsx";
 
-import HotelDetalle
-    from "../pages/public/HotelDetalle.jsx";
+import HotelDetalle from "../pages/HotelDetalle/HotelDetalle.jsx";
 
-import Rutas
-    from "../pages/public/Rutas.jsx";
-
-import RutaDetalle
-    from "../pages/public/RutaDetalle.jsx";
-
-import Noticias
-    from "../pages/noticia/Noticias.jsx";
-
+import Noticias from "../pages/noticia/Noticias.jsx";
 
 function AppRoutes() {
+  return (
+    <Routes>
 
-    return (
-        <Routes>
+      {/* INICIO */}
+      <Route
+        path="/"
+        element={<Home />}
+      />
 
-            <Route
-                path="/"
-                element={<Home />}
-            />
+      {/* HUECAS */}
+      <Route
+        path="/huecas"
+        element={<Huecas />}
+      />
 
-            <Route
-                path="/huecas"
-                element={<Huecas />}
-            />
+      <Route
+        path="/huecas/:id"
+        element={<HuecaDetalle />}
+      />
 
-            <Route
-                path="/huecas/:id"
-                element={<HuecaDetalle />}
-            />
+      {/* HOTELES */}
+      <Route
+        path="/hoteles"
+        element={<Hoteles />}
+      />
 
-            <Route
-                path="/hoteles"
-                element={<Hoteles />}
-            />
+      <Route
+        path="/hoteles/:id"
+        element={<HotelDetalle />}
+      />
 
-            <Route
-                path="/hoteles/:id"
-                element={<HotelDetalle />}
-            />
+      {/* NOTICIAS */}
+      <Route
+        path="/noticias"
+        element={<Noticias />}
+      />
 
-            <Route
-                path="/rutas"
-                element={<Rutas />}
-            />
+      {/* RUTAS NO EXISTENTES */}
+      <Route
+        path="*"
+        element={<Navigate to="/" replace />}
+      />
 
-            <Route
-                path="/rutas/:id"
-                element={<RutaDetalle />}
-            />
-
-            <Route
-                path="/noticias"
-                element={<Noticias />}
-            />
-
-            <Route
-                path="*"
-                element={
-                    <Navigate
-                        to="/"
-                        replace
-                    />
-                }
-            />
-
-        </Routes>
-    );
+    </Routes>
+  );
 }
-
 
 export default AppRoutes;
